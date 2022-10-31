@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-function permissao($id){
+
+function permissao($id)
+{
     switch ($id) {
         case '1':
             return true;
@@ -27,13 +30,13 @@ Auth::routes();
 
 Route::get('/', function () {
     $permitido = isset(Auth::user()->id) ? permissao(Auth::user()->id) : false;
-    return view('welcome' , compact('permitido'));
+    return view('welcome', compact('permitido'));
 });
 
 Route::resource('sistema', 'App\Http\Controllers\SistemaController')->middleware('auth');
 
-Route::get('cadastro', function () {return 'cadastro';})->name('cadastro');
+Route::any('cadastro', function () {
+    return 'cadastro';
+})->name('cadastro');
 
-Route::get('search', 'App\Http\Controllers\SistemaController@search')->middleware('auth')->name('search');
-
-
+Route::any('search', 'App\Http\Controllers\SistemaController@search')->middleware('auth')->name('search');
