@@ -6,15 +6,12 @@
         @include('assets.msg')
 
         <div class="container">
-
             <h1>Sistema</h1>
-            {{-- Criar form que busca o codigo e retorna a comanda --}}
-            <form action="">
-                <div class="card container p-3">
-                    <div class="typeahead__container">
-                        <input id="code" name="code" type="text" class="js-typeahead form-control my-3"
-                            autocomplete="off" />
-                    </div>
+            <form action="{{ route('searchComanda') }}" method="POST" id="searchComanda">
+                @csrf
+                @method ('POST')
+                <div class="my-3">
+                    <input type="text" class="form-control" name="code" id="code" />
                 </div>
             </form>
             @include('sistema.comanda')
@@ -29,11 +26,26 @@
 @section('scriptEnd')
     <script>
         window.addEventListener('keydown', (e) => {
-            $('#code').focus();
-            if (e.key == 'Enter') {
-                // chamar comanda após inserir codigo
+            if ($('#modalAdd').hasClass('show')) {
+                $('#procItem').focus()
+            } else {
+                $('#code').focus();
+                if (e.key == 'Enter') {
+                    $('#searchComanda').submit()
+                }
+                if (e.key == 'Control') {
+                    $('#modalAdd').modal('show')
+                }
             }
         })
+
+        @if (isset($cartao))
+            @if (!isset($cartao->nome))
+                $(document).ready(function() {
+                    $('#modalInit').modal('show')
+                })
+            @endif
+        @endif
 
         $.typeahead({
             input: '.js-typeahead',
@@ -43,26 +55,19 @@
             display: "nome",
             source: {
                 ajax: {
-                    url: "{{ route('search') }}",
+                    url: "{{ route('searchItem') }}",
                     data: {
-                        search: $('#code').val()
+                        search: $('#procItem').val()
                     }
                 }
             },
             callback: {
                 onClickAfter: function(node, a, item, event) {
                     event.preventDefault();
-                    @if (!Session::has('modal'))
-                        $('#code').val('');
-                        $('#item').val(item.id);
-                        $('#qtde').val(prompt('Digite a QUANTIDADE:'));
-                        $('#formItem').submit();
-                    @else
-                        $('#code').val('');
-                        $('#itemInit').val(item.id);
-                        $('#qtdeInit').val(prompt('Digite a QUANTIDADE:'));
-                        $('#modalInitForm').submit();
-                    @endif
+                    qtde = prompt("Digite a QUANTIDADE:")
+                    $('#itemId').val(item.id)
+                    $('#qtde').val(qtde)
+                    $('#modalAddForm').submit()
                 }
             }
         });

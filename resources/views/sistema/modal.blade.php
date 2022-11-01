@@ -8,9 +8,10 @@
                 <div class="modal-body">
                     @csrf
                     <h3>Nome</h3>
-                    <input class="form-control" id="nome" name="nome" type="text" />
-                    <input class="d-none" id="codeModal" name="code" type="text"
+                    <input class="form-control" name="nome" type="text"
                         value="{{ isset($cartao->nome) ? $cartao->nome : '' }}" />
+                    <input class="d-none" name="card_id" type="text"
+                        value="{{ isset($cartao->id) ? $cartao->id : '' }}" />
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Salvar</button>
@@ -20,3 +21,34 @@
         </div>
     </div>
 </div>
+
+@if (isset($cartao->nome))
+    <div class="modal fade" id="modalAdd" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="modalAddForm" method="post" action="{{ route('sistema.store') }}">
+                    <div class="modal-header">
+                        <h3>Adicionar item para {{ $cartao->nome }}</h3>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        @method('POST')
+                        <h3>Procurar</h3>
+                        <div class="typeahead__container">
+                            <input id="procItem" type="text" class="js-typeahead form-control my-3"
+                                autocomplete="off" />
+                        </div>
+                        <input class="d-none" id="itemId" name="id" type="text" />
+                        <input class="d-none" id="qtde" name="qtde" type="text" value="1" />
+                        <input class="d-none" name="card_id" type="text"
+                            value="{{ isset($cartao->id) ? $cartao->id : '' }}" />
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button class="btn btn-success" onclick="$('#modalAddForm').submit()">Adicionar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif

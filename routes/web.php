@@ -39,4 +39,5 @@ Route::any('cadastro', function () {
     return 'cadastro';
 })->name('cadastro');
 
-Route::any('search', 'App\Http\Controllers\SistemaController@search')->middleware('auth')->name('search');
+Route::any('searchItem', 'App\Http\Controllers\SistemaController@searchItem')->middleware('auth')->name('searchItem');
+Route::any('searchComanda', 'App\Http\Controllers\SistemaController@searchComanda')->middleware('auth')->name('searchComanda');
