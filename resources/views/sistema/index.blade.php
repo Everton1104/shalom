@@ -11,7 +11,7 @@
                 @csrf
                 @method ('POST')
                 <div class="my-3">
-                    <input type="text" class="form-control" name="code" id="code" />
+                    <input type="text" class="form-control" name="code" id="code" autocomplete="off" />
                 </div>
             </form>
             @include('sistema.comanda')

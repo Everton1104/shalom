@@ -9,7 +9,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Nome</th>
+                        <th>Item</th>
                         <th>Valor unitário</th>
                         <th>Quantidade</th>
                         <th>Total</th>
@@ -19,7 +19,7 @@
                     @foreach ($comanda as $item)
                         <tr>
                             <td>
-                                <a href="#" onclick="if(confirm('Deletar?'))deletar({!! $item->id !!})">
+                                <a href="#" onclick="if(confirm('Deletar {!! $item->qtde.' '.$item->nome !!}?')){window.location.href='{!! route('sistema.delete',[$cartao->id, $item->id]) !!}'}">
                                     <i style="color:red;" class="fa-solid fa-trash m-2"></i>
                                 </a>
                                 <a href="#">
@@ -38,9 +38,4 @@
             <h3>Total Geral: R$ {{ $total }}</h3>
         @endif
     </div>
-    <script>
-        function deletar(id) {
-            location.href = "sistema/" + id
-        }
-    </script>
 @endif

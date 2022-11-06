@@ -45,10 +45,19 @@ class SistemaController extends Controller
     public function index($card_id = null)
     {
         if (isset($card_id)) {
-            $comanda = ComandaModel::where([
-                ['card_id', '=', $card_id],
-                ['pago', '=', '0'],
-            ])->leftJoin('itens', 'comanda.item_id', '=', 'itens.id')->get();
+            $comanda = ComandaModel::where(
+                [
+                    ['card_id', '=', $card_id],
+                    ['pago', '=', '0'],
+                ]
+            )->leftJoin(
+                    'itens',
+                    'comanda.item_id',
+                    '=',
+                    'itens.id'
+                )
+            ->select('comanda.*', 'itens.nome', 'itens.valor', 'itens.id as itemId')
+                ->get();
             $cartao = CartaoModel::where('id', '=', $card_id)->first();
             $permitido = $this->permissao(Auth::user()->id);
             return view('sistema.index', compact('permitido', 'cartao', 'comanda'));
@@ -71,14 +80,17 @@ class SistemaController extends Controller
     }
 
     public function store(Request $request) // fazer storeUpdateFormRequest
+
     {
 
         if (isset($request->id) && isset($request->card_id)) {
-            ComandaModel::create([
-                'item_id' => $request->id,
-                'card_id' => $request->card_id,
-                'qtde' => $request->qtde,
-            ]);
+            ComandaModel::create(
+                [
+                    'item_id' => $request->id,
+                    'card_id' => $request->card_id,
+                    'qtde' => $request->qtde,
+                ]
+            );
             return $this->index($request->card_id);
         } else {
             if (isset($request->card_id)) {
@@ -89,11 +101,17 @@ class SistemaController extends Controller
         }
     }
 
-    public function show($id) // o id que esta vindo esta errado
+    public function show($id)
+    {
+        return 'show';
+    
+    }
+    public function deletar($card, $id)
     {
         ComandaModel::where('id', $id)->first()->delete();
-        return redirect()->back()->with('msg', 'Deletado com sucesso');
+        return $this->index($card);
     }
+
 
     /**
      * Show the form for editing the specified resource.

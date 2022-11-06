@@ -34,6 +34,7 @@ Route::get('/', function () {
 });
 
 Route::resource('sistema', 'App\Http\Controllers\SistemaController')->middleware('auth');
+Route::any('sistema/{card}/{id}', 'App\Http\Controllers\SistemaController@deletar')->name('sistema.delete')->middleware('auth');
 
 Route::any('cadastro', function () {
     return 'cadastro';

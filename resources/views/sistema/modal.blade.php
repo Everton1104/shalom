@@ -45,7 +45,6 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button class="btn btn-success" onclick="$('#modalAddForm').submit()">Adicionar</button>
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
