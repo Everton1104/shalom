@@ -6,6 +6,11 @@
         @include('assets.msg')
 
         <div class="container">
+        @if(Auth::user()->id == 1)
+            <div class="my-3">
+                <button class="btn btn-primary">Cadastrar card</button>
+            </div>
+        @endif
             <h1>Sistema</h1>
             <form action="{{ route('searchComanda') }}" method="POST" id="searchComanda">
                 @csrf

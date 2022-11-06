@@ -33,8 +33,9 @@ Route::get('/', function () {
     return view('welcome', compact('permitido'));
 });
 
-Route::resource('sistema', 'App\Http\Controllers\SistemaController')->middleware('auth');
+Route::any('sistema/{card}/pagar', 'App\Http\Controllers\SistemaController@pagar')->name('sistema.pagar')->middleware('auth');
 Route::any('sistema/{card}/{id}', 'App\Http\Controllers\SistemaController@deletar')->name('sistema.delete')->middleware('auth');
+Route::resource('sistema', 'App\Http\Controllers\SistemaController')->middleware('auth');
 
 Route::any('cadastro', function () {
     return 'cadastro';

@@ -22,9 +22,6 @@
                                 <a href="#" onclick="if(confirm('Deletar {!! $item->qtde.' '.$item->nome !!}?')){window.location.href='{!! route('sistema.delete',[$cartao->id, $item->id]) !!}'}">
                                     <i style="color:red;" class="fa-solid fa-trash m-2"></i>
                                 </a>
-                                <a href="#">
-                                    <i class="fa-solid fa-pen-to-square m-2"></i>
-                                </a>
                                 {{ $item->nome }}
                             </td>
                             <td>R$ {{ $item->valor }}</td>
@@ -36,6 +33,9 @@
                 </tbody>
             </table>
             <h3>Total Geral: R$ {{ $total }}</h3>
+            <div>
+                <a href="#" onclick="if(confirm('Fechar comanda de {!! $cartao->nome !!}?')){window.location.href='{!! route('sistema.pagar', $cartao->id) !!}'}" class="btn btn-success">Pagar</a>
+            </div>
         @endif
     </div>
 @endif

@@ -106,10 +106,21 @@ class SistemaController extends Controller
         return 'show';
     
     }
-    public function deletar($card, $id)
+    public function deletar($card, $id = null)
     {
-        ComandaModel::where('id', $id)->first()->delete();
+        if(isset(ComandaModel::where('id', $id)->first()->id)){
+            ComandaModel::where('id', $id)->first()->delete();
+        }
         return $this->index($card);
+    }
+
+    public function pagar($card)
+    {
+        if(isset(ComandaModel::where('card_id', $card)->first()->id)){
+            ComandaModel::where('card_id', $card)->update(['pago'=>1]);
+            CartaoModel::where('id', $card)->update(['nome'=>null]);
+        }
+        return redirect()->back()->with('msg', 'Comanda paga.');
     }
 
 
