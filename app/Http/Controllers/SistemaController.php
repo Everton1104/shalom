@@ -51,12 +51,12 @@ class SistemaController extends Controller
                     ['pago', '=', '0'],
                 ]
             )->leftJoin(
-                    'itens',
-                    'comanda.item_id',
-                    '=',
-                    'itens.id'
-                )
-            ->select('comanda.*', 'itens.nome', 'itens.valor', 'itens.id as itemId')
+                'itens',
+                'comanda.item_id',
+                '=',
+                'itens.id'
+            )
+                ->select('comanda.*', 'itens.nome', 'itens.valor', 'itens.id as itemId')
                 ->get();
             $cartao = CartaoModel::where('id', '=', $card_id)->first();
             $permitido = $this->permissao(Auth::user()->id);
@@ -104,11 +104,11 @@ class SistemaController extends Controller
     public function show($id)
     {
         return 'show';
-    
     }
+
     public function deletar($card, $id = null)
     {
-        if(isset(ComandaModel::where('id', $id)->first()->id)){
+        if (isset(ComandaModel::where('id', $id)->first()->id)) {
             ComandaModel::where('id', $id)->first()->delete();
         }
         return $this->index($card);
@@ -116,11 +116,30 @@ class SistemaController extends Controller
 
     public function pagar($card)
     {
-        if(isset(ComandaModel::where('card_id', $card)->first()->id)){
-            ComandaModel::where('card_id', $card)->update(['pago'=>1]);
-            CartaoModel::where('id', $card)->update(['nome'=>null]);
+        if (isset(ComandaModel::where('card_id', $card)->first()->id)) {
+            ComandaModel::where('card_id', $card)->update(['pago' => 1]);
+            CartaoModel::where('id', $card)->update(['nome' => null]);
+            return redirect()->back()->with('msg', 'Comanda paga.');
         }
-        return redirect()->back()->with('msg', 'Comanda paga.');
+        return redirect()->back()->with('erroMsg', 'Comanda vazia.');
+    }
+
+    public function addCard(Request $request)
+    {
+        if (!empty($request->code)) {
+            try {
+                $cartao = CartaoModel::create(['code' => $request->code]);
+                return redirect()->back()->with('msg', 'Cartão ' . $cartao->id . ' criado.');
+            } catch (\Throwable $th) {
+                return redirect()->back()->with('erroMsg', 'Este cartão já existe.');
+            }
+        }
+        return redirect()->back()->with('erroMsg', 'Valor inválido');
+    }
+
+    public function cadastroProdutos()
+    {
+        return 'cadastroProdutos';
     }
 
 

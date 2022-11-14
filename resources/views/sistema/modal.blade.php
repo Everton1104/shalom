@@ -51,3 +51,25 @@
         </div>
     </div>
 @endif
+
+
+<div class="modal fade" id="addCard" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="modalAddCard" method="post" action="{{ route('sistema.addCard') }}">
+                <div class="modal-header">
+                    <h3>Cadastrar Novo Cartão</h3>
+                </div>
+                <div class="modal-body">
+                    @csrf
+                    @method('POST')
+                    <h3>Aprixime o cartão do leitor!</h3>
+                    <input class="form-control" id="newcode" name="code" type="number" />
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

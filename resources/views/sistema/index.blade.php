@@ -6,11 +6,11 @@
         @include('assets.msg')
 
         <div class="container">
-        @if(Auth::user()->id == 1)
-            <div class="my-3">
-                <button class="btn btn-primary">Cadastrar card</button>
-            </div>
-        @endif
+            @if (Auth::user()->id == 1)
+                <div class="my-3">
+                    <button class="btn btn-primary" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
+                </div>
+            @endif
             <h1>Sistema</h1>
             <form action="{{ route('searchComanda') }}" method="POST" id="searchComanda">
                 @csrf
@@ -33,6 +33,8 @@
         window.addEventListener('keydown', (e) => {
             if ($('#modalAdd').hasClass('show')) {
                 $('#procItem').focus()
+            } else if ($('#addCard').hasClass('show')) {
+                $('#newcode').focus()
             } else {
                 $('#code').focus();
                 if (e.key == 'Enter') {

@@ -3,6 +3,10 @@
         <h1><a style="color:rgb(113, 113, 224); rounded;cursor:pointer" id="btnModal" data-bs-toggle="modal"
                 data-bs-target="#modalInit"><i class="fa-solid fa-pen-to-square"></i></a>
             {{ $cartao->nome }}</h1>
+        <div class="float-right">
+            <button type="button" class="btn btn-primary btn-sm" onclick="$('#modalAdd').modal('show')">Adicionar
+                item</button>
+        </div>
         <hr>
         @if (isset($comanda))
             <?php $total = 0; ?>
@@ -19,7 +23,8 @@
                     @foreach ($comanda as $item)
                         <tr>
                             <td>
-                                <a href="#" onclick="if(confirm('Deletar {!! $item->qtde.' '.$item->nome !!}?')){window.location.href='{!! route('sistema.delete',[$cartao->id, $item->id]) !!}'}">
+                                <a href="#"
+                                    onclick="if(confirm('Deletar {!! $item->qtde . ' ' . $item->nome !!}?')){window.location.href='{!! route('sistema.delete', [$cartao->id, $item->id]) !!}'}">
                                     <i style="color:red;" class="fa-solid fa-trash m-2"></i>
                                 </a>
                                 {{ $item->nome }}
@@ -34,7 +39,9 @@
             </table>
             <h3>Total Geral: R$ {{ $total }}</h3>
             <div>
-                <a href="#" onclick="if(confirm('Fechar comanda de {!! $cartao->nome !!}?')){window.location.href='{!! route('sistema.pagar', $cartao->id) !!}'}" class="btn btn-success">Pagar</a>
+                <a href="#"
+                    onclick="if(confirm('Fechar comanda de {!! $cartao->nome !!}?')){window.location.href='{!! route('sistema.pagar', $cartao->id) !!}'}"
+                    class="btn btn-success">Pagar</a>
             </div>
         @endif
     </div>
