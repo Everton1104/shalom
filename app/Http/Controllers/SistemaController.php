@@ -53,6 +53,49 @@ class SistemaController extends Controller
         return $this->index();
     }
 
+    public function searchNomeAberto(Request $request)
+    {
+        if (isset($request->nome)) {
+            $comandas = ComandaModel::where([
+                ['pago', '0'],
+                ['nome', 'LIKE', '%' . $request->nome . '%']
+            ])
+                ->leftJoin(
+                    'cartao',
+                    'comanda.card_id',
+                    '=',
+                    'cartao.id'
+                )
+                ->select('comanda.*', 'cartao.nome', 'cartao.updated_at')
+                ->groupBy('card_id')->get();
+            $permitido = $this->permissao(Auth::user()->id);
+            return view('sistema.aberto', compact('permitido', 'comandas'));
+        }
+        return $this->aberto();
+    }
+
+    public function aberto()
+    {
+        $comandas = ComandaModel::where('pago', '0')
+            ->leftJoin(
+                'cartao',
+                'comanda.card_id',
+                '=',
+                'cartao.id'
+            )
+            ->select('comanda.*', 'cartao.nome')
+            ->groupBy('card_id')->get();
+        $permitido = $this->permissao(Auth::user()->id);
+        return view('sistema.aberto', compact('permitido', 'comandas'));
+    }
+
+    public function indexAberto(Request $request)
+    {
+        if (isset($request->card_id))
+            return $this->index($request->card_id);
+        return $this->index();
+    }
+
     public function index($card_id = null)
     {
         if (isset($card_id)) {
