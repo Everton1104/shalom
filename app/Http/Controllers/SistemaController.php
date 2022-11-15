@@ -42,7 +42,7 @@ class SistemaController extends Controller
         return $this->index();
     }
 
-    public function searchNome(Request $request)
+    public function searchNome(Request $request) // VERIFICAR SE O PROCURAR POR NOME ESTA TRAZENDO COMANDA PAGAS
     {
         if (isset($request->nome)) {
             $cartao = CartaoModel::where('nome', 'LIKE', '%' . $request->nome . '%')->first();
@@ -91,8 +91,9 @@ class SistemaController extends Controller
 
     public function indexAberto(Request $request)
     {
-        if (isset($request->card_id))
+        if (isset($request->card_id)) {
             return $this->index($request->card_id);
+        }
         return $this->index();
     }
 
