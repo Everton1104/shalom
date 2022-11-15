@@ -42,6 +42,17 @@ class SistemaController extends Controller
         return $this->index();
     }
 
+    public function searchNome(Request $request)
+    {
+        if (isset($request->nome)) {
+            $cartao = CartaoModel::where('nome', 'LIKE', '%' . $request->nome . '%')->first();
+            if (isset($cartao->id)) {
+                return $this->index($cartao->id);
+            }
+        }
+        return $this->index();
+    }
+
     public function index($card_id = null)
     {
         if (isset($card_id)) {

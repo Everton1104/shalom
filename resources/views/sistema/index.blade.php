@@ -6,11 +6,12 @@
         @include('assets.msg')
 
         <div class="container">
-            @if (Auth::user()->id == 1 || Auth::user()->id == 2)
-                <div class="my-3">
-                    <button class="btn btn-primary" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
-                </div>
-            @endif
+            <div class="my-3">
+                @if (Auth::user()->id == 1 || Auth::user()->id == 2)
+                    <button class="btn btn-success mx-2" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
+                @endif
+                <button class="btn btn-primary mx-2" onclick="$('#modalSearchNome').modal('show')">Procurar por Nome</button>
+            </div>
             <h1>Sistema</h1>
             <form action="{{ route('searchComanda') }}" method="POST" id="searchComanda">
                 @csrf
