@@ -77,6 +77,9 @@
                                             {{ __('Cadastro de produtos') }}
                                         </a>
                                     @endif
+                                    <a class="dropdown-item" href="#" onclick="$('#modalAltPass').modal('show')">
+                                        {{ __('Alterar Senha') }}
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -97,6 +100,41 @@
         <main class="py-4">
             @yield('content')
         </main>
+
+        <div class="modal fade" id="modalAltPass" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="formAltPass" method="post" action="{{ route('altPass') }}">
+                        <div class="modal-header">
+                            <h3>Alterar Senha</h3>
+                        </div>
+                        <div class="modal-body">
+                            @csrf
+                            @method('POST')
+                            <label for="pass">Nova Senha</label>
+                            <div class="row">
+                                <div class="col-11">
+                                    <input class="form-control" id="pass" name="pass" type="password" />
+                                </div>
+                                <div class="col-1 d-flex align-items-center">
+                                    <a onclick="if($('#pass').attr('type') == 'password'){
+                                        $('#pass').attr('type','text') && $('#eye').attr('class','fa-solid fa-eye-slash')
+                                        }else{
+                                            $('#pass').attr('type','password') && $('#eye').attr('class','fa-solid fa-eye')
+                                        }">
+                                        <i id="eye" class="fa-solid fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" onclick="$('#formAltPass').submit()">Enviar</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     @yield('scriptEnd')
 </body>

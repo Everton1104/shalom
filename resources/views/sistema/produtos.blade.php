@@ -7,6 +7,16 @@
             <h1>Produtos</h1>
             <button type="button" class="btn btn-primary mt-3" onclick="$('#modalAdd').modal('show')">Adicionar
                 Produto</button>
+
+            <form method="post" action="{{ route('sistema.searchProduto') }}">
+                @csrf
+                @method('POST')
+                <div class="input-group my-3">
+                    <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <input class="form-control" type="text" id="search" name="search">
+                </div>
+            </form>
+
             <table class="table table-hover table-striped mt-5">
                 <thead>
                     <th width="80"></th>

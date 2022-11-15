@@ -157,7 +157,7 @@ class SistemaController extends Controller
         }
     }
 
-    public function deleteProduto($id) // PROCURAR TODAS AS OCORRENCIAS DDO PRODUTO ANTES DE APAGAR E COLOCAR NA COMANDA PRODUTO DELETADO DIA **/**/****  
+    public function deleteProduto($id)
     {
         try {
             $item = ItemModel::where('id', $id)->first();
@@ -184,6 +184,24 @@ class SistemaController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('erroMsg', "Erro ao apagar" . $th);
         }
+    }
+
+    public function alterarSenha(Request $request) //fazer validacao
+    {
+        $user = Auth::user();
+        $user->password = bcrypt($request->pass);
+        $user->save();
+        return redirect()->back()->with('msg', "Senha Alterada");
+    }
+
+    public function searchProduto(Request $request)
+    {
+        if (isset($request->search)) {
+            $itens = ItemModel::where('nome', 'LIKE', '%' . $request->search . '%')->get();
+            $permitido = $this->permissao(Auth::user()->id);
+            return view('sistema.produtos', compact('permitido', 'itens'));
+        }
+        return $this->indexProdutos();
     }
 
 
