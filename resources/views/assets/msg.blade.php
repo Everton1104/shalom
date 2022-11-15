@@ -11,7 +11,13 @@
 @endif
 
 <script>
-    setTimeout(() => {
-        $('#fechar-alerta').click();
-    }, 3000);
+    @if (Session::has('erroMsg'))
+        setTimeout(() => {
+            $('#fechar-alerta').click();
+        }, 10000);
+    @elseif (Session::has('msg'))
+        setTimeout(() => {
+            $('#fechar-alerta').click();
+        }, 3000);
+    @endif
 </script>

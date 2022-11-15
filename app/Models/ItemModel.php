@@ -14,6 +14,7 @@ class ItemModel extends Model
     protected $fillable = [
         'id',
         'nome',
-        'valor'
+        'valor',
+        'obs'
     ];
 }

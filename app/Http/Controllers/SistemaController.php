@@ -160,10 +160,14 @@ class SistemaController extends Controller
     public function deleteProduto($id) // PROCURAR TODAS AS OCORRENCIAS DDO PRODUTO ANTES DE APAGAR E COLOCAR NA COMANDA PRODUTO DELETADO DIA **/**/****  
     {
         try {
+            $item = ItemModel::where('id', $id)->first();
+            ComandaModel::where('item_id', $id)->update([
+                'obs' => 'O produto ' . $item->nome . ' foi deletado por ' . Auth::user()->name . ' em ' . date('d/m/Y') . ' as ' . date('H:i:s') . ' valor un. R$' . number_format($item->valor, 2, ',', '.')
+            ]);
             ItemModel::where('id', $id)->delete();
             return redirect()->back()->with('msg', $id . " apagado.");
         } catch (\Throwable $th) {
-            return redirect()->back()->with('erroMsg', "Erro ao apagar");
+            return redirect()->back()->with('erroMsg', "Erro ao apagar" . $th);
         }
     }
 

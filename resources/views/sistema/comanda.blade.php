@@ -21,23 +21,32 @@
                 </thead>
                 <tbody>
                     @foreach ($comanda as $item)
-                        <tr>
-                            <td>
-                                <a href="#"
-                                    onclick="if(confirm('Deletar {!! $item->qtde . ' ' . $item->nome !!}?')){window.location.href='{!! route('sistema.delete', [$cartao->id, $item->id]) !!}'}">
-                                    <i style="color:red;" class="fa-solid fa-trash m-2"></i>
-                                </a>
-                                {{ $item->nome }}
-                            </td>
-                            <td>R$ {{ $item->valor }}</td>
-                            <td>{{ $item->qtde }}</td>
-                            <td>R$ {{ $item->valor * $item->qtde }}</td>
-                            <?php $total += $item->valor * $item->qtde; ?>
-                        </tr>
+                        @if (empty($item->nome))
+                            <tr>
+                                <td>{{ $item->obs }}</td>
+                                <td></td>
+                                <td>{{ $item->qtde }}</td>
+                                <td></td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td>
+                                    <a href="#"
+                                        onclick="if(confirm('Deletar {!! $item->qtde . ' ' . $item->nome !!}?')){window.location.href='{!! route('sistema.delete', [$cartao->id, $item->id]) !!}'}">
+                                        <i style="color:red;" class="fa-solid fa-trash m-2"></i>
+                                    </a>
+                                    {{ $item->nome }}
+                                </td>
+                                <td>R$ {{ number_format($item->valor, 2, ',', '.') }}</td>
+                                <td>{{ $item->qtde }}</td>
+                                <td>R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}</td>
+                                <?php $total += $item->valor * $item->qtde; ?>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
-            <h3>Total Geral: R$ {{ $total }}</h3>
+            <h3>Total Geral: R$ {{ number_format($total, 2, ',', '.') }}</h3>
             <div>
                 <a href="#"
                     onclick="if(confirm('Fechar comanda de {!! $cartao->nome !!}?')){window.location.href='{!! route('sistema.pagar', $cartao->id) !!}'}"

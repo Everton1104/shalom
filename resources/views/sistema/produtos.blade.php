@@ -28,7 +28,7 @@
                                 {{ $item->nome }}
                             </td>
                             <td>
-                                {{ $item->valor }}
+                                R$ {{ number_format($item->valor, 2, ',', '.') }}
                             </td>
                         </tr>
                     @endforeach
