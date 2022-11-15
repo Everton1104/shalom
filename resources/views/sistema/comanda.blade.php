@@ -2,7 +2,13 @@
     <div class="card container p-3 my-5">
         <h1><a style="color:rgb(113, 113, 224); rounded;cursor:pointer" id="btnModal" data-bs-toggle="modal"
                 data-bs-target="#modalInit"><i class="fa-solid fa-pen-to-square"></i></a>
-            {{ $cartao->nome }}</h1>
+            {{ $cartao->nome }}
+        </h1>
+        <div class="float-end my-3">Data de entrada da comanda
+            {{ date('d/m/Y', strtotime($cartao->updated_at)) }}
+            as
+            {{ date('H:i:s', strtotime($cartao->updated_at)) }}
+        </div>
         <div class="float-right">
             <button type="button" class="btn btn-primary btn-sm" onclick="$('#modalAdd').modal('show')">Adicionar
                 item</button>

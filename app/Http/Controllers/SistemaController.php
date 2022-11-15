@@ -190,7 +190,7 @@ class SistemaController extends Controller
                     'nome' => $request->nome,
                     'valor' => $request->valor,
                 ]);
-                return redirect()->back()->with('msg', "Atualizaddo.");
+                return redirect()->back()->with('msg', "Atualizado.");
             }
         } catch (\Throwable $th) {
             return redirect()->back()->with('erroMsg', "Erro ao apagar" . $th);
