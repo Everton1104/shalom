@@ -4,7 +4,7 @@
     @if ($permitido)
         <div class="container">
             @include('assets.msg')
-            <h1>Comandas em Aberto</h1>
+            <h1>Procurar por Nome</h1>
 
             <form method="post" action="{{ route('sistema.searchNomeAberto') }}">
                 @csrf

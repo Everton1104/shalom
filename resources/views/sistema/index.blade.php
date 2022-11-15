@@ -10,8 +10,7 @@
                 @if (Auth::user()->id == 1 || Auth::user()->id == 2)
                     <button class="btn btn-success mx-2" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
                 @endif
-                <button class="btn btn-primary mx-2" onclick="$('#modalSearchNome').modal('show')">Procurar por Nome</button>
-                <a class="btn btn-warning mx-2" href="{{ route('sistema.aberto') }}">Comandas em aberto</a>
+                <a class="btn btn-primary mx-2" href="{{ route('sistema.aberto') }}">Procurar por Nome</a>
             </div>
             <h1>Sistema</h1>
             <form action="{{ route('searchComanda') }}" method="POST" id="searchComanda">

@@ -73,27 +73,3 @@
         </div>
     </div>
 </div>
-
-
-
-<div class="modal fade" id="modalSearchNome" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="formSearchNome" method="post" action="{{ route('sistema.searchNome') }}">
-                <div class="modal-header">
-                    <h3>Procurar comanda pelo nome.</h3>
-                </div>
-                <div class="modal-body">
-                    @csrf
-                    @method('POST')
-                    <h3>Nome</h3>
-                    <input class="form-control" id="searchNome" name="nome" type="text" />
-                </div>
-            </form>
-            <div class="modal-footer">
-                <button class="btn btn-success" onclick="$('#formSearchNome').submit()">Enviar</button>
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>
