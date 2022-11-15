@@ -137,9 +137,49 @@ class SistemaController extends Controller
         return redirect()->back()->with('erroMsg', 'Valor inválido');
     }
 
-    public function cadastroProdutos()
+    public function indexProdutos()
     {
-        return 'cadastroProdutos';
+        $itens = ItemModel::get();
+        $permitido = $this->permissao(Auth::user()->id);
+        return view('sistema.produtos', compact('permitido', 'itens'));
+    }
+
+    public function novoProduto(Request $request)
+    {
+        if (!empty($request->nome) && !empty($request->valor)) {
+            ItemModel::create([
+                'nome' => $request->nome,
+                'valor' => $request->valor,
+            ]);
+            return redirect()->back()->with('msg', 'Adicionado');
+        } else {
+            return redirect()->back()->with('erroMsg', 'Valores inválidos');
+        }
+    }
+
+    public function deleteProduto($id) // PROCURAR TODAS AS OCORRENCIAS DDO PRODUTO ANTES DE APAGAR E COLOCAR NA COMANDA PRODUTO DELETADO DIA **/**/****  
+    {
+        try {
+            ItemModel::where('id', $id)->delete();
+            return redirect()->back()->with('msg', $id . " apagado.");
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('erroMsg', "Erro ao apagar");
+        }
+    }
+
+    public function editarProduto(Request $request)
+    {
+        try {
+            if (!empty($request->nome) && !empty($request->valor) && !empty($request->id)) {
+                ItemModel::where('id', $request->id)->update([
+                    'nome' => $request->nome,
+                    'valor' => $request->valor,
+                ]);
+                return redirect()->back()->with('msg', "Atualizaddo.");
+            }
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('erroMsg', "Erro ao apagar" . $th);
+        }
     }
 
 

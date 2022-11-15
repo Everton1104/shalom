@@ -35,7 +35,10 @@ Route::get('/', function () {
 
 Route::any('sistema/{card}/pagar', 'App\Http\Controllers\SistemaController@pagar')->name('sistema.pagar')->middleware('auth');
 Route::any('sistema/addCard', 'App\Http\Controllers\SistemaController@addCard')->name('sistema.addCard')->middleware('auth');
-Route::any('sistema/cadastroProdutos', 'App\Http\Controllers\SistemaController@cadastroProdutos')->name('sistema.cadastroProdutos')->middleware('auth');
+Route::any('sistema/cadastroProdutos', 'App\Http\Controllers\SistemaController@indexProdutos')->name('sistema.cadastroProdutos')->middleware('auth');
+Route::any('sistema/cadastroProdutos/novo', 'App\Http\Controllers\SistemaController@novoProduto')->name('sistema.novoProduto')->middleware('auth');
+Route::any('sistema/cadastroProdutos/delete/{id}', 'App\Http\Controllers\SistemaController@deleteProduto')->name('sistema.deleteProduto')->middleware('auth');
+Route::any('sistema/cadastroProdutos/edit', 'App\Http\Controllers\SistemaController@editarProduto')->name('sistema.editarProduto')->middleware('auth');
 Route::any('sistema/{card}/{id}', 'App\Http\Controllers\SistemaController@deletar')->name('sistema.delete')->middleware('auth');
 Route::resource('sistema', 'App\Http\Controllers\SistemaController')->middleware('auth');
 

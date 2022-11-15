@@ -6,7 +6,7 @@
         @include('assets.msg')
 
         <div class="container">
-            @if (Auth::user()->id == 1)
+            @if (Auth::user()->id == 1 || Auth::user()->id == 2)
                 <div class="my-3">
                     <button class="btn btn-primary" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
                 </div>

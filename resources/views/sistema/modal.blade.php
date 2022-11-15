@@ -63,7 +63,7 @@
                 <div class="modal-body">
                     @csrf
                     @method('POST')
-                    <h3>Aprixime o cartão do leitor!</h3>
+                    <h3>Aproxime o cartão do leitor!</h3>
                     <input class="form-control" id="newcode" name="code" type="number" />
                 </div>
             </form>
