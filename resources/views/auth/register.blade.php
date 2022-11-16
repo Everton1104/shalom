@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container">
+        @include('assets.msg')
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -72,14 +73,24 @@
                                 </div>
                             </div>
 
-                            <div class="g-recaptcha" id="recap" data-sitekey="{{ env('RECAPTCHA_KEY') }}">
-                            </div>
+                            <input type="text" class="d-none" name="recaptcha_token" id="recaptcha_token" />
+
+                            <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeLGw0jAAAAADuJBosBQG6WPtVWQ9HZ6C92JjlR"></script>
+                            <script>
+                                grecaptcha.enterprise.ready(function() {
+                                    grecaptcha.enterprise.execute('6LeLGw0jAAAAADuJBosBQG6WPtVWQ9HZ6C92JjlR', {
+                                        action: 'login'
+                                    }).then(function(token) {
+                                        $('#recaptcha_token').val(token)
+                                    });
+                                });
+                            </script>
 
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4">
-                                    <a href="#" class="btn btn-primary" onclick="enviarForm()">
+                                    <button class="btn btn-primary" type="submit">
                                         {{ __('Registrar') }}
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -88,18 +99,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function enviarForm() {
-            retorno = grecaptcha.getResponse();
-            if (retorno) {
-                $('#formRegister').submit();
-            } else {
-                alert('Marque a opção "Eu não sou um robô!".')
-            }
-        }
-    </script>
-@endsection
-@section('scriptTop')
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

@@ -49,11 +49,22 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        $response = $this->requestAPI([
+            'method' => 'POST',
+            'url' => 'https://www.google.com/recaptcha/api/siteverify',
+            'conteudo' => [
+                'secret' => env("RECAPTCHA_SECRET"),
+                'response' => $data["recaptcha_token"]
+            ],
         ]);
+        if (json_decode($response)->success) {
+            return Validator::make($data, [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ]);
+        }
+        return redirect()->back()->with('erroMsg', 'Marque a opção não sou um robô.');
     }
 
     /**
@@ -69,5 +80,20 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    public function requestAPI(array $dados = ['method' => 'GET', 'url' => '', 'conteudo' => ['']])
+    {
+        $context  = stream_context_create(
+            array(
+                'http' =>
+                array(
+                    'method'  => $dados['method'],
+                    'header'  => 'Content-Type: application/x-www-form-urlencoded',
+                    'content' => http_build_query($dados['conteudo'])
+                )
+            )
+        );
+        return file_get_contents($dados['url'], false, $context);
     }
 }
