@@ -274,6 +274,7 @@ class SistemaController extends Controller
                     'comanda.updated_at',
                     [date('Y-m-d', strtotime($request->dataInit)), date('Y-m-d', strtotime('+1 days', strtotime($request->dataFim)))]
                 )
+                    ->where('pago', '1')
                     ->leftJoin(
                         'itens',
                         'comanda.item_id',
