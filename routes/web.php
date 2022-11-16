@@ -35,6 +35,7 @@ Route::get('/', function () {
 
 Route::any('altPass', 'App\Http\Controllers\SistemaController@alterarSenha')->name('altPass')->middleware('auth');
 
+Route::any('sistema/relatorio', 'App\Http\Controllers\SistemaController@indexRelatorio')->name('sistema.relatorio')->middleware('auth');
 Route::any('sistema/searchNomeAberto', 'App\Http\Controllers\SistemaController@searchNomeAberto')->name('sistema.searchNomeAberto')->middleware('auth');
 Route::any('sistema/indexAberto', 'App\Http\Controllers\SistemaController@indexAberto')->name('sistema.indexAberto')->middleware('auth');
 Route::any('sistema/aberto', 'App\Http\Controllers\SistemaController@aberto')->name('sistema.aberto')->middleware('auth');

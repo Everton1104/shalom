@@ -76,6 +76,9 @@
                                         <a class="dropdown-item" href="{{ route('sistema.cadastroProdutos') }}">
                                             {{ __('Cadastro de produtos') }}
                                         </a>
+                                        <a class="dropdown-item" href="{{ route('sistema.relatorio') }}">
+                                            {{ __('Relatórios') }}
+                                        </a>
                                     @endif
                                     <a class="dropdown-item" href="#" onclick="$('#modalAltPass').modal('show')">
                                         {{ __('Alterar Senha') }}
@@ -117,7 +120,8 @@
                                     <input class="form-control" id="pass" name="pass" type="password" />
                                 </div>
                                 <div class="col-1 d-flex align-items-center">
-                                    <a onclick="if($('#pass').attr('type') == 'password'){
+                                    <a
+                                        onclick="if($('#pass').attr('type') == 'password'){
                                         $('#pass').attr('type','text') && $('#eye').attr('class','fa-solid fa-eye-slash')
                                         }else{
                                             $('#pass').attr('type','password') && $('#eye').attr('class','fa-solid fa-eye')

@@ -266,6 +266,30 @@ class SistemaController extends Controller
         return $this->indexProdutos();
     }
 
+    public function indexRelatorio(Request $request)
+    {
+        if (isset($request->dataInit) && isset($request->dataFim)) {
+            if (strtotime($request->dataInit) <= strtotime($request->dataFim)) {
+                $resumo = ComandaModel::whereBetween(
+                    'comanda.updated_at',
+                    [date('Y-m-d', strtotime($request->dataInit)), date('Y-m-d', strtotime('+1 days', strtotime($request->dataFim)))]
+                )
+                    ->leftJoin(
+                        'itens',
+                        'comanda.item_id',
+                        '=',
+                        'itens.id'
+                    )
+                    ->select('comanda.*', 'itens.nome as itemNome', 'itens.valor', 'itens.id as itemId')->get();
+                $permitido = $this->permissao(Auth::user()->id);
+                return view('sistema.relatorio', compact('permitido', 'resumo', 'request'));
+            } else {
+                return redirect()->back()->with('erroMsg', 'A data de inicio não pode ser maior do que a final.');
+            }
+        }
+        $permitido = $this->permissao(Auth::user()->id);
+        return view('sistema.relatorio', compact('permitido'));
+    }
 
     /**
      * Show the form for editing the specified resource.
