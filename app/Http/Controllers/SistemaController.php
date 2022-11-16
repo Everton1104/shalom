@@ -22,6 +22,31 @@ class SistemaController extends Controller
         }
     }
 
+    public function requestAPI(array $dados = ['method' => 'GET', 'url' => '', 'conteudo' => ['']])
+    {
+        $context  = stream_context_create(
+            array(
+                'http' =>
+                array(
+                    'method'  => $dados['method'],
+                    'header'  => 'Content-Type: application/x-www-form-urlencoded',
+                    'content' => http_build_query($dados['conteudo'])
+                )
+            )
+        );
+        return file_get_contents($dados['url'], false, $context);
+    }
+
+    // $response = $this->requestAPI([
+    //     'method' => 'POST',
+    //     'url' => 'https://www.google.com/recaptcha/api/siteverify',
+    //     'conteudo' => [
+    //         'secret' => '6LdbLIsiAAAAAAiXwe4wlLiQIeBnqpC2ujnSktGl',
+    //         'response' => $request["g-recaptcha-response"]
+    //     ],
+    // ]);
+    // if (json_decode($response)->success) {
+
     public function searchItem(Request $request)
     {
         if (isset($request)) {
