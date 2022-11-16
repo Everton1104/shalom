@@ -169,11 +169,18 @@ class SistemaController extends Controller
         return $this->index($card);
     }
 
-    public function pagar($card)
+    public function pagar(Request $request)
     {
-        if (isset(ComandaModel::where('card_id', $card)->first()->id)) {
-            ComandaModel::where('card_id', $card)->update(['pago' => 1]);
-            CartaoModel::where('id', $card)->update(['nome' => null]);
+        if (isset(ComandaModel::where('card_id', $request->card)->first()->id)) {
+            ComandaModel::where([
+                ['card_id', $request->card],
+                ['pago', '0'],
+            ])->update([
+                'pago' => 1,
+                'tipo' => $request->tipo,
+                'nome' => $request->nome,
+            ]);
+            CartaoModel::where('id', $request->card)->update(['nome' => null]);
             return redirect()->back()->with('msg', 'Comanda paga.');
         }
         return redirect()->back()->with('erroMsg', 'Comanda vazia.');

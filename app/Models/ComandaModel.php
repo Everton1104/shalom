@@ -15,6 +15,8 @@ class ComandaModel extends Model
         'card_id',
         'item_id',
         'qtde',
+        'tipo',
+        'nome',
         'pago'
     ];
 }

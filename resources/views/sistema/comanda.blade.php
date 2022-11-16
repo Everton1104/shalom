@@ -54,10 +54,58 @@
             </table>
             <h3>Total Geral: R$ {{ number_format($total, 2, ',', '.') }}</h3>
             <div>
-                <a href="#"
-                    onclick="if(confirm('Fechar comanda de {!! $cartao->nome !!}?')){window.location.href='{!! route('sistema.pagar', $cartao->id) !!}'}"
-                    class="btn btn-success">Pagar</a>
+                <a href="#" onclick="$('#modalPagar').modal('show')" class="btn btn-success">Pagar</a>
             </div>
+            <div class="modal fade" id="modalPagar" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form class="needs-validation" novalidate id="formPagar" method="post"
+                            action="{{ route('sistema.pagar') }}">
+                            <div class="modal-header">
+                                <h3>Fechar Comanda de {!! $cartao->nome !!}</h3>
+                            </div>
+                            <div class="modal-body">
+                                @csrf
+                                @method('POST')
+                                <input type="text" class="d-none" name="card" value="{{ $cartao->id }}" />
+                                <input type="text" class="d-none" name="nome" value="{{ $cartao->nome }}" />
+                                <h3>Selecione o tipo de pagamento</h3>
+                                <select class="form-select" name="tipo" required>
+                                    <option value="" selected disabled>Selecione uma opção</option>
+                                    <option value="1">Débito</option>
+                                    <option value="2">Crédito</option>
+                                    <option value="3">PIX</option>
+                                    <option value="4">Dinheiro</option>
+                                </select>
+                                <div class="my-3">
+                                    Total Geral: R$ {{ number_format($total, 2, ',', '.') }}
+                                </div>
+                            </div>
+                            <button type="submit" id="btnPagar" class="d-none"></button>
+                        </form>
+                        <div class="modal-footer">
+                            <button class="btn btn-success" onclick="$('#btnPagar').click()">Pagar</button>
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                (() => {
+                    'use strict'
+                    const forms = document.querySelectorAll('.needs-validation')
+                    Array.from(forms).forEach(form => {
+                        form.addEventListener('submit', event => {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+                })()
+            </script>
         @endif
     </div>
 @endif
+{{-- onclick="if(confirm('Fechar comanda de {!! $cartao->nome !!}?')){window.location.href='{!! route('sistema.pagar', $cartao->id) !!}'}" --}}
