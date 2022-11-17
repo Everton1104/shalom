@@ -105,10 +105,10 @@ class SistemaController extends Controller
         $comandas = ComandaModel::where([['pago', '0']]) // verificar se isso funciona
 
 
-            ->orWhere([
-                ['comanda.card_id', '!=', 999],
-                ['comanda.card_id', '!=', 888]
-            ])
+            // ->orWhere([
+            //     ['comanda.card_id', '!=', 999],
+            //     ['comanda.card_id', '!=', 888]
+            // ])
 
 
             ->leftJoin(
