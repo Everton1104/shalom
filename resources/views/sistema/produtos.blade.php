@@ -21,6 +21,7 @@
                 <thead>
                     <th width="80"></th>
                     <th>NOME</th>
+                    <th width="200">ESTOQUE</th>
                     <th width="200">CATEGORIA</th>
                     <th width="100">VALOR COMPRA</th>
                     <th width="100">VALOR VENDA</th>
@@ -38,6 +39,9 @@
                                     <i class="fa-solid fa-trash"></i></a>
                             <td>
                                 {{ $item->nome }}
+                            </td>
+                            <td>
+                                {{ $item->qtde }}
                             </td>
                             <td>
                                 {{ $item->categoria }}

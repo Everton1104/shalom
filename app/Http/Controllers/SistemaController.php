@@ -324,6 +324,30 @@ class SistemaController extends Controller
         return view('sistema.estoque', compact('permitido', 'itens'));
     }
 
+    public function addEstoque(Request $request)
+    {
+        if (!empty($request->qtde) && !empty($request->item_id)) {
+            $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
+            EstoqueModel::where('item_id', $request->item_id)->update([
+                'qtde' => $estoque->qtde + $request->qtde
+            ]);
+            return redirect()->back()->with('msg', 'Adicionado ao estoque');
+        }
+        return redirect()->back()->with('erroMsg', 'Erro ao adicionar estoque');
+    }
+
+    public function removeEstoque(Request $request)
+    {
+        if (!empty($request->qtde) && !empty($request->item_id)) {
+            $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
+            EstoqueModel::where('item_id', $request->item_id)->update([
+                'qtde' => $estoque->qtde - $request->qtde
+            ]);
+            return redirect()->back()->with('msg', 'Removido do estoque');
+        }
+        return redirect()->back()->with('erroMsg', 'Erro ao remover estoque');
+    }
+
     public function alterarSenha(Request $request)
     {
         $user = Auth::user();
