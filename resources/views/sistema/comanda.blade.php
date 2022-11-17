@@ -9,9 +9,15 @@
             as
             {{ date('H:i:s', strtotime($cartao->updated_at)) }}
         </div>
-        <div class="float-right">
+        <div>
             <button type="button" class="btn btn-primary btn-sm" onclick="$('#modalAdd').modal('show')">Adicionar
                 item</button>
+            <div class="mx-3 float-end">
+                <button type="button" class="btn btn-warning btn-sm"
+                    onclick="$('#modalBonificacao').modal('show') && $('#nomeBonificacao').text('{!! $cartao->nome !!}')">
+                    Bonificação
+                </button>
+            </div>
         </div>
         <hr>
         @if (isset($comanda))
@@ -20,6 +26,7 @@
                 <thead>
                     <tr>
                         <th>Item</th>
+                        <th>Categoria</th>
                         <th>Valor unitário</th>
                         <th>Quantidade</th>
                         <th>Total</th>
@@ -42,6 +49,24 @@
                                         <i style="color:red;" class="fa-solid fa-trash m-2"></i>
                                     </a>
                                     {{ $item->nome }}
+                                </td>
+                                <td>
+                                    @php
+                                        switch ($item->categoria) {
+                                            case '1':
+                                                echo 'Bebidas Alcoólicas';
+                                                break;
+                                            case '2':
+                                                echo 'Porções';
+                                                break;
+                                            case '3':
+                                                echo 'Bebidas';
+                                                break;
+                                            case '4':
+                                                echo 'Doces e Sobremesas';
+                                                break;
+                                        }
+                                    @endphp
                                 </td>
                                 <td>R$ {{ number_format($item->valor, 2, ',', '.') }}</td>
                                 <td>{{ $item->qtde }}</td>

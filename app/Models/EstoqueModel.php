@@ -16,6 +16,7 @@ class EstoqueModel extends Model
         'item_id',
         'qtde',
         'valor',
+        'user',
         'obs'
     ];
 }

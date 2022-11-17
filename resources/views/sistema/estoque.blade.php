@@ -57,7 +57,11 @@
                                     {{ $item->nome }}
                                 </td>
                                 <td>
-                                    {{ $item->qtde }}
+                                    @if ($item->qtde < 0)
+                                        <span style="color:red">Atenção estoque NEGATIVO de {{ $item->qtde }}.
+                                        @else
+                                            {{ $item->qtde }}
+                                    @endif
                                 </td>
                                 <td>
                                     R$ {{ number_format($item->valor, 2, ',', '.') }}

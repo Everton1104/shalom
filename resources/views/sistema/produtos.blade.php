@@ -44,7 +44,22 @@
                                 {{ $item->qtde }}
                             </td>
                             <td>
-                                {{ $item->categoria }}
+                                @php
+                                    switch ($item->categoria) {
+                                        case '1':
+                                            echo 'Bebidas Alcoólicas';
+                                            break;
+                                        case '2':
+                                            echo 'Porções';
+                                            break;
+                                        case '3':
+                                            echo 'Bebidas';
+                                            break;
+                                        case '4':
+                                            echo 'Doces e Sobremesas';
+                                            break;
+                                    }
+                                @endphp
                             </td>
                             <td>
                                 R$ {{ number_format($item->valorCompra, 2, ',', '.') }}
@@ -75,7 +90,7 @@
                         <label for="nome">Nome</label>
                         <input class="form-control" id="nomeAdd" name="nome" type="text" />
                         <label for="categoria">Categoria</label>
-                        <select class="form-control" id="categoria" name="categoria">
+                        <select class="form-select" id="categoria" name="categoria">
                             <option value="" selected disabled>Selecione uma opção</option>
                             <option value="1">Bebidas Alcoólicas</option>
                             <option value="2">Porções</option>
@@ -111,7 +126,7 @@
                         <label for="nome">Nome</label>
                         <input class="form-control" id="nomeEdt" name="nome" type="text" />
                         <label for="categoria">Categoria</label>
-                        <select class="form-control" id="categoriaEdt" name="categoria">
+                        <select class="form-select" id="categoriaEdt" name="categoria">
                             <option value="" selected disabled>Selecione uma opção</option>
                             <option value="1">Bebidas Alcoólicas</option>
                             <option value="2">Porções</option>

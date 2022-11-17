@@ -137,7 +137,7 @@ class SistemaController extends Controller
                 '=',
                 'itens.id'
             )
-                ->select('comanda.*', 'itens.nome', 'itens.valor', 'itens.id as itemId')
+                ->select('comanda.*', 'itens.nome', 'itens.valor', 'itens.id as itemId', 'categoria')
                 ->get();
             $cartao = CartaoModel::where('id', '=', $card_id)->first();
             $permitido = $this->permissao(Auth::user()->id);
@@ -162,7 +162,6 @@ class SistemaController extends Controller
 
     public function store(Request $request)
     {
-
         if (isset($request->id) && isset($request->card_id)) {
             ComandaModel::create(
                 [
@@ -329,7 +328,9 @@ class SistemaController extends Controller
         if (!empty($request->qtde) && !empty($request->item_id)) {
             $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
             EstoqueModel::where('item_id', $request->item_id)->update([
-                'qtde' => $estoque->qtde + $request->qtde
+                'qtde' => $estoque->qtde + $request->qtde,
+                'user' => Auth::user()->nome,
+                'obs' => Auth::user()->name . ' registrou a entrada de ' . $request->qtde . ' destes produtos em ' . date('d/m/Y') . ' as ' . date('H:i:s'),
             ]);
             return redirect()->back()->with('msg', 'Adicionado ao estoque');
         }
@@ -341,11 +342,55 @@ class SistemaController extends Controller
         if (!empty($request->qtde) && !empty($request->item_id)) {
             $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
             EstoqueModel::where('item_id', $request->item_id)->update([
-                'qtde' => $estoque->qtde - $request->qtde
+                'qtde' => $estoque->qtde - $request->qtde,
+                'user' => Auth::user()->nome,
+                'obs' => Auth::user()->name . ' registrou a remoção de ' . $request->qtde . ' destes produtos em ' . date('d/m/Y') . ' as ' . date('H:i:s'),
             ]);
             return redirect()->back()->with('msg', 'Removido do estoque');
         }
         return redirect()->back()->with('erroMsg', 'Erro ao remover estoque');
+    }
+
+    public function extravio(Request $request)
+    {
+        if (!empty($request->qtde) && !empty($request->item_id)) {
+            ComandaModel::create(
+                [
+                    'item_id' => $request->item_id,
+                    'card_id' => 999,
+                    'qtde' => $request->qtde,
+                    'obs' => Auth::user()->name . ' registrou a perda deste(es) produto(os) em ' . date('d/m/Y') . ' as ' . date('H:i:s'),
+                ]
+            );
+            $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
+            EstoqueModel::where('item_id', $request->item_id)->update([
+                'qtde' => $estoque->qtde - $request->qtde,
+            ]);
+            return redirect()->back()->with('msg', 'Produto(os) extraviado(os).');
+        }
+        return redirect()->back()->with('erroMsg', 'Erro ao cadastrar.');
+    }
+
+    public function bonificacao(Request $request)
+    {
+        if (!empty($request->qtde) && !empty($request->item_id) && !empty($request->code)) {
+            $card = CartaoModel::where('code', $request->code)->first();
+            ComandaModel::create(
+                [
+                    'item_id' => $request->item_id,
+                    'card_id' => 888,
+                    'nome' => $card->nome,
+                    'qtde' => $request->qtde,
+                    'obs' => Auth::user()->name . ' registrou a bonificação deste(es) produto(os) em ' . date('d/m/Y') . ' as ' . date('H:i:s'),
+                ]
+            );
+            $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
+            EstoqueModel::where('item_id', $request->item_id)->update([
+                'qtde' => $estoque->qtde - $request->qtde,
+            ]);
+            return redirect()->to('searchComanda?code=' . $request->code)->with('msg', 'Produto(os) bonificado(os).');
+        }
+        return redirect()->back()->with('erroMsg', 'Erro ao cadastrar.');
     }
 
     public function alterarSenha(Request $request)

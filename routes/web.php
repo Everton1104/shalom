@@ -35,6 +35,8 @@ Route::get('/', function () {
 
 Route::any('altPass', 'App\Http\Controllers\SistemaController@alterarSenha')->name('altPass')->middleware('auth');
 
+Route::any('sistema/bonificacao', 'App\Http\Controllers\SistemaController@bonificacao')->name('sistema.bonificacao')->middleware('auth');
+Route::any('sistema/extravio', 'App\Http\Controllers\SistemaController@extravio')->name('sistema.extravio')->middleware('auth');
 Route::any('sistema/estoque/remove', 'App\Http\Controllers\SistemaController@removeEstoque')->name('sistema.removeEstoque')->middleware('auth');
 Route::any('sistema/estoque/add', 'App\Http\Controllers\SistemaController@addEstoque')->name('sistema.addEstoque')->middleware('auth');
 Route::any('sistema/estoque', 'App\Http\Controllers\SistemaController@indexEstoque')->name('sistema.estoque')->middleware('auth');

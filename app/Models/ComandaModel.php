@@ -17,6 +17,7 @@ class ComandaModel extends Model
         'qtde',
         'tipo',
         'nome',
+        'obs',
         'pago'
     ];
 }

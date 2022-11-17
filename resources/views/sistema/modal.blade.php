@@ -73,3 +73,61 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalExtravio" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formExtravio" method="post" action="{{ route('sistema.extravio') }}">
+                <div class="modal-header">
+                    <h3>Extravio</h3>
+                </div>
+                <div class="modal-body">
+                    @csrf
+                    @method('POST')
+                    <div class="my-3">
+                        <label for="procItemExtravio">Procurar produto</label>
+                        <div class="typeahead__container">
+                            <input id="procItemExtravio" type="text" class="js-typeahead form-control my-3"
+                                autocomplete="off" />
+                        </div>
+                        <input class="d-none" id="item_idExtravio" name="item_id" type="text" />
+                        <input class="d-none" id="qtdeExtravio" name="qtde" type="text" />
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalBonificacao" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formBonificacao" method="post" action="{{ route('sistema.bonificacao') }}">
+                <div class="modal-header">
+                    <h3>Bonificação</h3>
+                </div>
+                <div class="modal-body">
+                    @csrf
+                    @method('POST')
+                    <div class="my-3">
+                        <h3>Bonificação para <span id="nomeBonificacao"></span></h3>
+                        <label for="procItemBonificacao">Procurar produto</label>
+                        <div class="typeahead__container">
+                            <input id="procItemBonificacao" type="text" class="js-typeahead form-control my-3"
+                                autocomplete="off" />
+                        </div>
+                        <input class="d-none" name="code" type="text" id="nomeValBonificacao" />
+                        <input class="d-none" id="item_idBonificacao" name="item_id" type="text" />
+                        <input class="d-none" id="qtdeBonificacao" name="qtde" type="text" />
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

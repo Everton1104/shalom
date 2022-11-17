@@ -11,6 +11,11 @@
                     <button class="btn btn-success mx-2" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
                 @endif
                 <a class="btn btn-primary mx-2" href="{{ route('sistema.aberto') }}">Procurar por Nome</a>
+                <div class="mx-3 float-end">
+                    <button type="button" class="btn btn-danger" onclick="$('#modalExtravio').modal('show')">
+                        Extravio
+                    </button>
+                </div>
             </div>
             <h1>Sistema</h1>
             <form action="{{ route('searchComanda') }}" method="POST" id="searchComanda">
@@ -36,6 +41,10 @@
                 $('#procItem').focus()
             } else if ($('#addCard').hasClass('show')) {
                 $('#newcode').focus()
+            } else if ($('#modalExtravio').hasClass('show')) {
+                $('#procItemExtravio').focus()
+            } else if ($('#modalBonificacao').hasClass('show')) {
+                $('#procItemBonificacao').focus()
             } else {
                 $('#code').focus();
                 if (e.key == 'Enter') {
@@ -71,11 +80,26 @@
             },
             callback: {
                 onClickAfter: function(node, a, item, event) {
-                    event.preventDefault();
-                    qtde = prompt("Digite a QUANTIDADE:")
-                    $('#itemId').val(item.id)
-                    $('#qtde').val(qtde)
-                    $('#modalAddForm').submit()
+                    if ($('#modalExtravio').hasClass('show')) {
+                        event.preventDefault();
+                        qtde = prompt("Digite a QUANTIDADE:")
+                        $('#item_idExtravio').val(item.id)
+                        $('#qtdeExtravio').val(qtde)
+                        $('#formExtravio').submit()
+                    } else if ($('#modalBonificacao').hasClass('show')) {
+                        event.preventDefault();
+                        qtde = prompt("Digite a QUANTIDADE:")
+                        $('#item_idBonificacao').val(item.id)
+                        $('#qtdeBonificacao').val(qtde)
+                        $('#nomeValBonificacao').val("{{ $cartao->code ?? '' }}")
+                        $('#formBonificacao').submit()
+                    } else {
+                        event.preventDefault();
+                        qtde = prompt("Digite a QUANTIDADE:")
+                        $('#itemId').val(item.id)
+                        $('#qtde').val(qtde)
+                        $('#modalAddForm').submit()
+                    }
                 }
             }
         });

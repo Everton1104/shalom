@@ -17,6 +17,5 @@ class ItemModel extends Model
         'categoria',
         'estoque_id',
         'valor',
-        'obs'
     ];
 }
