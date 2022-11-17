@@ -23,6 +23,8 @@
                 </thead>
                 <tbody>
                     @foreach ($comandas as $comanda)
+                        {{-- NAO LISTAR COMANDA 999 E 888. PELO CONTROLLER --}}
+                        {{-- @if ($comanda->nome) --}}
                         <tr>
                             <td>
                                 <a href="{{ route('sistema.indexAberto', ['card_id' => $comanda->card_id]) }}">
@@ -37,6 +39,7 @@
                                 {{ date('H:i:s', strtotime($comanda->updated_at)) }}
                             </td>
                         </tr>
+                        {{-- @endif --}}
                     @endforeach
                 </tbody>
             </table>

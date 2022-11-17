@@ -102,7 +102,15 @@ class SistemaController extends Controller
 
     public function aberto()
     {
-        $comandas = ComandaModel::where('pago', '0')
+        $comandas = ComandaModel::where([['pago', '0']]) // verificar se isso funciona
+
+
+            ->orWhere([
+                ['comanda.card_id', '!=', 999],
+                ['comanda.card_id', '!=', 888]
+            ])
+
+
             ->leftJoin(
                 'cartao',
                 'comanda.card_id',
