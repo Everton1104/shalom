@@ -67,7 +67,7 @@ class RegisterController extends Controller
                 ],
                 [
                     'name.max' => 'O nome só pode ter no máximo 50 letras',
-                    'email.unique' => 'Esta Email já existe.',
+                    'email.unique' => 'Este Email já foi cadastrado.',
                     'password.confirmed' => 'As senhas digitadas não são iguais.',
                     'password.min' => 'A senha deve ter ao manos 8 digitos.',
                 ]

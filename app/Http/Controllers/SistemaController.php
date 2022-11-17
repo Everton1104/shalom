@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\ComandaModel;
 use App\Models\ItemModel;
 use App\Models\CartaoModel;
+use App\Models\EstoqueModel;
 
 class SistemaController extends Controller
 {
@@ -67,7 +68,7 @@ class SistemaController extends Controller
         return $this->index();
     }
 
-    public function searchNome(Request $request) // VERIFICAR SE O PROCURAR POR NOME ESTA TRAZENDO COMANDA PAGAS
+    public function searchNome(Request $request)
     {
         if (isset($request->nome)) {
             $cartao = CartaoModel::where('nome', 'LIKE', '%' . $request->nome . '%')->first();
@@ -216,7 +217,7 @@ class SistemaController extends Controller
         if (!empty($request->code)) {
             try {
                 $cartao = CartaoModel::create(['code' => $request->code]);
-                return redirect()->back()->with('msg', 'Cartão ' . $cartao->id . ' criado.');
+                return redirect()->back()->with('msg', 'Cartão ' . $cartao->code . ' criado.');
             } catch (\Throwable $th) {
                 return redirect()->back()->with('erroMsg', 'Este cartão já existe.');
             }
@@ -233,10 +234,16 @@ class SistemaController extends Controller
 
     public function novoProduto(Request $request)
     {
-        if (!empty($request->nome) && !empty($request->valor)) {
-            ItemModel::create([
+        if (!empty($request->nome) && !empty($request->valor) && !empty($request->valorVenda) && !empty($request->categoria) && !empty($request->qtde)) {
+            $item = ItemModel::create([
                 'nome' => $request->nome,
+                'valor' => $request->valorVenda,
+                'categoria' => $request->categoria,
+            ]);
+            EstoqueModel::create([
+                'item_id' => $item->id,
                 'valor' => $request->valor,
+                'qtde' => $request->qtde
             ]);
             return redirect()->back()->with('msg', 'Adicionado');
         } else {
@@ -252,7 +259,8 @@ class SistemaController extends Controller
                 'obs' => 'O produto ' . $item->nome . ' foi deletado por ' . Auth::user()->name . ' em ' . date('d/m/Y') . ' as ' . date('H:i:s') . ' valor un. R$' . number_format($item->valor, 2, ',', '.')
             ]);
             ItemModel::where('id', $id)->delete();
-            return redirect()->back()->with('msg', $id . " apagado.");
+            EstoqueModel::where('item_id', $id)->delete();
+            return redirect()->back()->with('msg', $item->nome . " apagado.");
         } catch (\Throwable $th) {
             return redirect()->back()->with('erroMsg', "Erro ao apagar" . $th);
         }
@@ -317,37 +325,28 @@ class SistemaController extends Controller
         return view('sistema.relatorio', compact('permitido'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function indexEstoque(Request $request)
     {
-        return 'edit';
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        return 'update';
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        return 'destroy';
+        if (isset($request->buscar)) {
+            $itens = EstoqueModel::where('itens.nome', 'LIKE', '%' . $request->buscar . '%')
+                ->leftJoin(
+                    'itens',
+                    'estoque.item_id',
+                    '=',
+                    'itens.id'
+                )
+                ->select('estoque.*', 'itens.nome', 'itens.valor as valorVenda')
+                ->get();
+        } else {
+            $itens = EstoqueModel::leftJoin(
+                'itens',
+                'estoque.item_id',
+                '=',
+                'itens.id'
+            )
+                ->select('estoque.*', 'itens.nome', 'itens.valor as valorVenda')->get();
+        }
+        $permitido = $this->permissao(Auth::user()->id);
+        return view('sistema.estoque', compact('permitido', 'itens'));
     }
 }

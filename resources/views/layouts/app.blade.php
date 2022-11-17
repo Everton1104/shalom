@@ -76,6 +76,9 @@
                                         <a class="dropdown-item" href="{{ route('sistema.cadastroProdutos') }}">
                                             {{ __('Cadastro de produtos') }}
                                         </a>
+                                        <a class="dropdown-item" href="{{ route('sistema.estoque') }}">
+                                            {{ __('Estoque') }}
+                                        </a>
                                         <a class="dropdown-item" href="{{ route('sistema.relatorio') }}">
                                             {{ __('Relatórios') }}
                                         </a>

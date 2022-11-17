@@ -62,8 +62,20 @@
                         @method('POST')
                         <label for="nome">Nome</label>
                         <input class="form-control" id="nomeAdd" name="nome" type="text" />
-                        <label for="nome">Valor</label>
+                        <label for="categoria">Categoria</label>
+                        <select class="form-control" id="categoria" name="categoria">
+                            <option value="" selected disabled>Selecione uma opção</option>
+                            <option value="1">Bebidas Alcoólicas</option>
+                            <option value="2">Porções</option>
+                            <option value="3">Bebidas</option>
+                            <option value="4">Doces e Sobremesas</option>
+                        </select>
+                        <label for="valorVendaAdd">Valor de Venda</label>
+                        <input class="form-control" id="valorVendaAdd" name="valorVenda" type="number" />
+                        <label for="valorAdd">Valor de Compra</label>
                         <input class="form-control" id="valorAdd" name="valor" type="number" />
+                        <label for="qtde">Quantidade no estoque</label>
+                        <input class="form-control" id="qtde" name="qtde" type="number" />
                     </div>
                 </form>
                 <div class="modal-footer">
