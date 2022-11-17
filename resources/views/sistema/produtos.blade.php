@@ -21,14 +21,16 @@
                 <thead>
                     <th width="80"></th>
                     <th>NOME</th>
-                    <th width="100">VALOR</th>
+                    <th width="200">CATEGORIA</th>
+                    <th width="100">VALOR COMPRA</th>
+                    <th width="100">VALOR VENDA</th>
                 </thead>
                 <tbody>
                     @foreach ($itens as $item)
                         <tr>
                             <td>
                                 <a href="#" class="mx-1"
-                                    onclick="editar('{!! $item->id !!}', '{!! $item->nome !!}', '{!! $item->valor !!}')"><i
+                                    onclick="editar('{!! $item->id !!}', '{!! $item->nome !!}', '{!! $item->valor !!}', '{!! $item->valorCompra !!}', '{!! $item->categoria !!}')"><i
                                         class="fa-solid fa-pen-to-square"></i></a>
                                 <a href="#" class="mx-1"
                                     onclick="if(confirm('Deletar {!! $item->nome !!}?')){window.location.href='{!! route('sistema.deleteProduto', $item->id) !!}'}"
@@ -36,6 +38,12 @@
                                     <i class="fa-solid fa-trash"></i></a>
                             <td>
                                 {{ $item->nome }}
+                            </td>
+                            <td>
+                                {{ $item->categoria }}
+                            </td>
+                            <td>
+                                R$ {{ number_format($item->valorCompra, 2, ',', '.') }}
                             </td>
                             <td>
                                 R$ {{ number_format($item->valor, 2, ',', '.') }}
@@ -70,10 +78,10 @@
                             <option value="3">Bebidas</option>
                             <option value="4">Doces e Sobremesas</option>
                         </select>
-                        <label for="valorVendaAdd">Valor de Venda</label>
-                        <input class="form-control" id="valorVendaAdd" name="valorVenda" type="number" />
-                        <label for="valorAdd">Valor de Compra</label>
+                        <label for="valorAdd">Valor de Venda</label>
                         <input class="form-control" id="valorAdd" name="valor" type="number" />
+                        <label for="valorAdd">Valor de Compra</label>
+                        <input class="form-control" id="valorCompraAdd" name="valorCompra" type="number" />
                         <label for="qtde">Quantidade no estoque</label>
                         <input class="form-control" id="qtde" name="qtde" type="number" />
                     </div>
@@ -95,11 +103,21 @@
                     <div class="modal-body">
                         @csrf
                         @method('POST')
+                        <input class="d-none" id="id" name="id" type="text" />
                         <label for="nome">Nome</label>
                         <input class="form-control" id="nomeEdt" name="nome" type="text" />
-                        <label for="nome">Valor</label>
+                        <label for="categoria">Categoria</label>
+                        <select class="form-control" id="categoriaEdt" name="categoria">
+                            <option value="" selected disabled>Selecione uma opção</option>
+                            <option value="1">Bebidas Alcoólicas</option>
+                            <option value="2">Porções</option>
+                            <option value="3">Bebidas</option>
+                            <option value="4">Doces e Sobremesas</option>
+                        </select>
+                        <label for="valorEdt">Valor de Venda</label>
                         <input class="form-control" id="valorEdt" name="valor" type="number" />
-                        <input class="d-none" id="id" name="id" type="number" />
+                        <label for="valorCompraEdt">Valor de Compra</label>
+                        <input class="form-control" id="valorCompraEdt" name="valorCompra" type="number" />
                     </div>
                 </form>
                 <div class="modal-footer">
@@ -113,43 +131,15 @@
 
 @section('scriptEnd')
     <script>
-        function editar(id, nome, valor) {
+        function editar(id, nome, valor, valorCompra, categoria) {
             $('#id').val(id)
             $('#nomeEdt').val(nome)
+            $('#categoriaEdt').val(categoria)
             $('#valorEdt').val(valor)
+            $('#valorCompraEdt').val(valorCompra)
             setTimeout(function() {
                 $('#modalEdt').modal('show')
             }, 150)
         }
-
-
-        window.addEventListener('keydown', (e) => {
-            $('#code').focus();
-        })
-
-        $.typeahead({
-            input: '.js-typeahead',
-            minLength: 3,
-            maxItem: 10,
-            order: "asc",
-            display: "nome",
-            source: {
-                ajax: {
-                    url: "{{ route('searchItem') }}",
-                    data: {
-                        search: $('#procItem').val()
-                    }
-                }
-            },
-            callback: {
-                onClickAfter: function(node, a, item, event) {
-                    event.preventDefault();
-                    qtde = prompt("Digite a QUANTIDADE:")
-                    $('#itemId').val(item.id)
-                    $('#qtde').val(qtde)
-                    $('#modalAddForm').submit()
-                }
-            }
-        });
     </script>
 @endsection

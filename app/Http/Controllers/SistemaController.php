@@ -160,8 +160,7 @@ class SistemaController extends Controller
         }
     }
 
-    public function store(Request $request) // fazer storeUpdateFormRequest
-
+    public function store(Request $request)
     {
 
         if (isset($request->id) && isset($request->card_id)) {
@@ -172,6 +171,10 @@ class SistemaController extends Controller
                     'qtde' => $request->qtde,
                 ]
             );
+            $estoque = EstoqueModel::where('item_id', $request->id)->first();
+            EstoqueModel::where('item_id', $request->id)->update([
+                'qtde' => $estoque->qtde - $request->qtde,
+            ]);
             return $this->index($request->card_id);
         } else {
             if (isset($request->card_id)) {
@@ -190,7 +193,12 @@ class SistemaController extends Controller
     public function deletar($card, $id = null)
     {
         if (isset(ComandaModel::where('id', $id)->first()->id)) {
-            ComandaModel::where('id', $id)->first()->delete();
+            $comanda = ComandaModel::where('id', $id)->first();
+            $estoque = EstoqueModel::where('item_id', $comanda->item_id)->first();
+            EstoqueModel::where('item_id', $comanda->item_id)->update([
+                'qtde' => $estoque->qtde + $comanda->qtde
+            ]);
+            $comanda->delete();
         }
         return $this->index($card);
     }
@@ -227,23 +235,32 @@ class SistemaController extends Controller
 
     public function indexProdutos()
     {
-        $itens = ItemModel::get();
+        $itens = ItemModel::leftJoin(
+            'estoque',
+            'estoque.item_id',
+            '=',
+            'itens.id'
+        )
+            ->select('itens.*', 'estoque.valor as valorCompra', 'estoque.qtde')->get();
         $permitido = $this->permissao(Auth::user()->id);
         return view('sistema.produtos', compact('permitido', 'itens'));
     }
 
     public function novoProduto(Request $request)
     {
-        if (!empty($request->nome) && !empty($request->valor) && !empty($request->valorVenda) && !empty($request->categoria) && !empty($request->qtde)) {
+        if (!empty($request->nome) && !empty($request->valor) && !empty($request->valorCompra) && !empty($request->categoria) && !empty($request->qtde)) {
             $item = ItemModel::create([
                 'nome' => $request->nome,
-                'valor' => $request->valorVenda,
+                'valor' => $request->valor,
                 'categoria' => $request->categoria,
             ]);
-            EstoqueModel::create([
+            $estoque = EstoqueModel::create([
                 'item_id' => $item->id,
-                'valor' => $request->valor,
+                'valor' => $request->valorCompra,
                 'qtde' => $request->qtde
+            ]);
+            ItemModel::where('id', $item->id)->update([
+                'estoque_id' => $estoque->id
             ]);
             return redirect()->back()->with('msg', 'Adicionado');
         } else {
@@ -268,20 +285,46 @@ class SistemaController extends Controller
 
     public function editarProduto(Request $request)
     {
-        try {
-            if (!empty($request->nome) && !empty($request->valor) && !empty($request->id)) {
-                ItemModel::where('id', $request->id)->update([
-                    'nome' => $request->nome,
-                    'valor' => $request->valor,
-                ]);
-                return redirect()->back()->with('msg', "Atualizado.");
-            }
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('erroMsg', "Erro ao apagar" . $th);
+        if (!empty($request->nome) && !empty($request->valor) && !empty($request->id) && !empty($request->valorCompra) && !empty($request->categoria)) {
+            ItemModel::where('id', $request->id)->update([
+                'nome' => $request->nome,
+                'valor' => $request->valor,
+                'categoria' => $request->categoria,
+            ]);
+            EstoqueModel::where('item_id', $request->id)->update([
+                'valor' => $request->valorCompra,
+            ]);
+            return redirect()->back()->with('msg', "Atualizado.");
         }
+        return redirect()->back()->with('erroMsg', "Erro ao Atualizar");
     }
 
-    public function alterarSenha(Request $request) //fazer validacao
+    public function indexEstoque(Request $request)
+    {
+        if (isset($request->buscar)) {
+            $itens = EstoqueModel::where('itens.nome', 'LIKE', '%' . $request->buscar . '%')
+                ->leftJoin(
+                    'itens',
+                    'estoque.item_id',
+                    '=',
+                    'itens.id'
+                )
+                ->select('estoque.*', 'itens.nome', 'itens.valor as valorVenda')
+                ->get();
+        } else {
+            $itens = EstoqueModel::leftJoin(
+                'itens',
+                'estoque.item_id',
+                '=',
+                'itens.id'
+            )
+                ->select('estoque.*', 'itens.nome', 'itens.valor as valorVenda')->get();
+        }
+        $permitido = $this->permissao(Auth::user()->id);
+        return view('sistema.estoque', compact('permitido', 'itens'));
+    }
+
+    public function alterarSenha(Request $request)
     {
         $user = Auth::user();
         $user->password = bcrypt($request->pass);
@@ -323,30 +366,5 @@ class SistemaController extends Controller
         }
         $permitido = $this->permissao(Auth::user()->id);
         return view('sistema.relatorio', compact('permitido'));
-    }
-
-    public function indexEstoque(Request $request)
-    {
-        if (isset($request->buscar)) {
-            $itens = EstoqueModel::where('itens.nome', 'LIKE', '%' . $request->buscar . '%')
-                ->leftJoin(
-                    'itens',
-                    'estoque.item_id',
-                    '=',
-                    'itens.id'
-                )
-                ->select('estoque.*', 'itens.nome', 'itens.valor as valorVenda')
-                ->get();
-        } else {
-            $itens = EstoqueModel::leftJoin(
-                'itens',
-                'estoque.item_id',
-                '=',
-                'itens.id'
-            )
-                ->select('estoque.*', 'itens.nome', 'itens.valor as valorVenda')->get();
-        }
-        $permitido = $this->permissao(Auth::user()->id);
-        return view('sistema.estoque', compact('permitido', 'itens'));
     }
 }
