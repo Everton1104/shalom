@@ -58,11 +58,20 @@ class RegisterController extends Controller
             ],
         ]);
         if (json_decode($response)->success) {
-            return Validator::make($data, [
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'string', 'min:8', 'confirmed'],
-            ]);
+            return Validator::make(
+                $data,
+                [
+                    'name' => ['required', 'string', 'max:50'],
+                    'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                    'password' => ['required', 'string', 'min:8', 'confirmed'],
+                ],
+                [
+                    'name.max' => 'O nome só pode ter no máximo 50 letras',
+                    'email.unique' => 'Esta Email já existe.',
+                    'password.confirmed' => 'As senhas digitadas não são iguais.',
+                    'password.min' => 'A senha deve ter ao manos 8 digitos.',
+                ]
+            );
         }
         return redirect()->back()->with('erroMsg', 'Marque a opção não sou um robô.');
     }
