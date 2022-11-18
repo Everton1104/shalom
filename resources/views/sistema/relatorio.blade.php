@@ -105,20 +105,53 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="my-2">
-                    Total cartão de DÉBITO: R$ {{ number_format($totalDebito, 2, ',', '.') }}
-                </div>
-                <div class="my-2">
-                    Total cartão de CRÉDITO: R$ {{ number_format($totalCredito, 2, ',', '.') }}
-                </div>
-                <div class="my-2">
-                    Total PIX: R$ {{ number_format($totalPix, 2, ',', '.') }}
-                </div>
-                <div class="my-2">
-                    Total DINHEIRO: R$ {{ number_format($totalDinheiro, 2, ',', '.') }}
-                </div>
-                <div class="my-2">
-                    Total de pagamentos: R$ {{ number_format($totalGeral, 2, ',', '.') }}
+                <div class="card my-3">
+                    <div class="card-body row">
+                        <div class="col-6">
+                            <div class="my-2">
+                                Total cartão de DÉBITO: R$ {{ number_format($totalDebito, 2, ',', '.') }}
+                            </div>
+                            <div class="my-2">
+                                Total cartão de CRÉDITO: R$ {{ number_format($totalCredito, 2, ',', '.') }}
+                            </div>
+                            <div class="my-2">
+                                Total PIX: R$ {{ number_format($totalPix, 2, ',', '.') }}
+                            </div>
+                            <div class="my-2">
+                                Total DINHEIRO: R$ {{ number_format($totalDinheiro, 2, ',', '.') }}
+                            </div>
+                            <div class="my-2">
+                                Total de pagamentos: R$ {{ number_format($totalGeral, 2, ',', '.') }}
+                            </div>
+                        </div>
+                        <div class="col-6" style="border-left: 1px solid;">
+                            @if (isset($extravio) && isset($bonificacao))
+                                @php
+                                    $total = 0;
+                                @endphp
+                                <h4>Extravio</h4>
+                                @foreach ($extravio as $item)
+                                    {{ $item->obs }}<br>
+                                    {{ $item->qtde }} X {{ $item->itemNome }} a R$
+                                    {{ number_format($item->valor, 2, ',', '.') }} cada.<br>
+                                    Total: R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}
+                                    <hr>
+                                    <?php $total += $item->valor * $item->qtde; ?>
+                                @endforeach
+                                <h4>Bonificações</h4>
+                                @foreach ($bonificacao as $item)
+                                    {{ $item->obs }}<br>
+                                    Para {{ $item->nome }}<br>
+                                    {{ $item->qtde }} X {{ $item->itemNome }} a R$
+                                    {{ number_format($item->valor, 2, ',', '.') }} cada.<br>
+                                    Total: R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}
+                                    <hr>
+                                    <?php $total += $item->valor * $item->qtde; ?>
+                                @endforeach
+                                Total geral: R$ {{ number_format($total, 2, ',', '.') }}
+                            @endif
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>

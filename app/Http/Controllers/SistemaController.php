@@ -435,8 +435,32 @@ class SistemaController extends Controller
                         'itens.id'
                     )
                     ->select('comanda.*', 'itens.nome as itemNome', 'itens.valor', 'itens.id as itemId')->get();
+                $extravio = ComandaModel::whereBetween(
+                    'comanda.updated_at',
+                    [date('Y-m-d', strtotime($request->dataInit)), date('Y-m-d', strtotime('+1 days', strtotime($request->dataFim)))]
+                )
+                    ->where('comanda.card_id', 999)
+                    ->leftJoin(
+                        'itens',
+                        'comanda.item_id',
+                        '=',
+                        'itens.id'
+                    )
+                    ->select('comanda.*', 'itens.nome as itemNome', 'itens.valor', 'itens.id as itemId')->get();
+                $bonificacao = ComandaModel::whereBetween(
+                    'comanda.updated_at',
+                    [date('Y-m-d', strtotime($request->dataInit)), date('Y-m-d', strtotime('+1 days', strtotime($request->dataFim)))]
+                )
+                    ->where('comanda.card_id', 888)
+                    ->leftJoin(
+                        'itens',
+                        'comanda.item_id',
+                        '=',
+                        'itens.id'
+                    )
+                    ->select('comanda.*', 'itens.nome as itemNome', 'itens.valor', 'itens.id as itemId')->get();
                 $permitido = $this->permissao(Auth::user()->id);
-                return view('sistema.relatorio', compact('permitido', 'resumo', 'request'));
+                return view('sistema.relatorio', compact('permitido', 'resumo', 'request', 'extravio', 'bonificacao'));
             } else {
                 return redirect()->back()->with('erroMsg', 'A data de inicio não pode ser maior do que a final.');
             }

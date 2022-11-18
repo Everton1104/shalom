@@ -6,12 +6,16 @@
         @include('assets.msg')
 
         <div class="container">
-            <div class="my-3">
+            <div class="mb-5 row text-center">
                 @if (Auth::user()->id == 1 || Auth::user()->id == 2)
-                    <button class="btn btn-success mx-2" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
+                    <div class="col m-2">
+                        <button class="btn btn-success" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
+                    </div>
                 @endif
-                <a class="btn btn-primary mx-2" href="{{ route('sistema.aberto') }}">Procurar por Nome</a>
-                <div class="mx-3 float-end">
+                <div class="col m-2">
+                    <a class="btn btn-primary" href="{{ route('sistema.aberto') }}">Procurar por Nome</a>
+                </div>
+                <div class="align-end col m-2">
                     <button type="button" class="btn btn-danger" onclick="$('#modalExtravio').modal('show')">
                         Extravio
                     </button>
