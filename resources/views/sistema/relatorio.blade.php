@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $totalDebito = 0;
+        $totalCredito = 0;
+        $totalPix = 0;
+        $totalDinheiro = 0;
+        $totalGeral = 0;
+        $totalPerda = 0;
+    @endphp
     @if ($permitido)
         <div class="container">
             @include('assets.msg')
@@ -40,13 +48,6 @@
                             <th>Total</th>
                         </thead>
                         <tbody>
-                            @php
-                                $totalDebito = 0;
-                                $totalCredito = 0;
-                                $totalPix = 0;
-                                $totalDinheiro = 0;
-                                $totalGeral = 0;
-                            @endphp
                             @foreach ($resumo as $item)
                                 <tr>
                                     <td>
@@ -136,9 +137,6 @@
                         </div>
                         <div class="col-6" style="border-left: 1px solid;">
                             @if (isset($extravio) && isset($bonificacao))
-                                @php
-                                    $totalPerda = 0;
-                                @endphp
                                 <h4>Extravio</h4>
                                 @foreach ($extravio as $item)
                                     {{ $item->obs }}<br>
