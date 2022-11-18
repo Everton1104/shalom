@@ -5,8 +5,8 @@
         <div class="container">
             @include('assets.msg')
             <div class="row">
-                <h1>Produtos</h1>
                 <div class="float-end"><a href="/sistema" class="btn btn-primary btn-sm">Voltar</a></div>
+                <h1>Produtos</h1>
             </div>
             <button type="button" class="btn btn-primary mt-3" onclick="$('#modalAdd').modal('show')">Adicionar
                 Produto</button>

@@ -5,8 +5,8 @@
         <div class="container">
             @include('assets.msg')
             <div class="row">
-                <h1>Procurar por Nome</h1>
                 <div class="float-end"><a href="/sistema" class="btn btn-primary btn-sm">Voltar</a></div>
+                <h1>Procurar por Nome</h1>
             </div>
 
             <form method="post" action="{{ route('sistema.searchNomeAberto') }}">

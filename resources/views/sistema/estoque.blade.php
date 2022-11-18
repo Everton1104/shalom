@@ -4,7 +4,10 @@
     @if ($permitido)
         <div class="container">
             @include('assets.msg')
-            <h1>Estoque</h1>
+            <div class="row">
+                <div class="float-end"><a href="/sistema" class="btn btn-primary btn-sm">Voltar</a></div>
+                <h1>Estoque</h1>
+            </div>
 
             <form class="needs-validation" novalidate method="post" action="{{ route('sistema.estoque') }}">
                 @csrf
