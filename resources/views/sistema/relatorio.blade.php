@@ -4,7 +4,10 @@
     @if ($permitido)
         <div class="container">
             @include('assets.msg')
-            <h1>Relatórios</h1>
+            <div class="row">
+                <h1>Relatórios</h1>
+                <div class="float-end"><a href="/sistema" class="btn btn-primary btn-sm">Voltar</a></div>
+            </div>
 
             <form class="needs-validation" novalidate method="post" action="{{ route('sistema.relatorio') }}">
                 @csrf
@@ -121,13 +124,20 @@
                                 Total DINHEIRO: R$ {{ number_format($totalDinheiro, 2, ',', '.') }}
                             </div>
                             <div class="my-2">
-                                Total de pagamentos: R$ {{ number_format($totalGeral, 2, ',', '.') }}
+                                Total de pagamentos: <span style="color:green"> + R$
+                                    {{ number_format($totalGeral, 2, ',', '.') }}</span>
+                            </div>
+                            <div class="my-5">
+                                <h4>
+                                    Total de pagamentos menos as perdas:
+                                    <span id="totalgeral"></span>
+                                </h4>
                             </div>
                         </div>
                         <div class="col-6" style="border-left: 1px solid;">
                             @if (isset($extravio) && isset($bonificacao))
                                 @php
-                                    $total = 0;
+                                    $totalPerda = 0;
                                 @endphp
                                 <h4>Extravio</h4>
                                 @foreach ($extravio as $item)
@@ -136,7 +146,7 @@
                                     {{ number_format($item->valor, 2, ',', '.') }} cada.<br>
                                     Total: R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}
                                     <hr>
-                                    <?php $total += $item->valor * $item->qtde; ?>
+                                    <?php $totalPerda += $item->valor * $item->qtde; ?>
                                 @endforeach
                                 <h4>Bonificações</h4>
                                 @foreach ($bonificacao as $item)
@@ -146,9 +156,10 @@
                                     {{ number_format($item->valor, 2, ',', '.') }} cada.<br>
                                     Total: R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}
                                     <hr>
-                                    <?php $total += $item->valor * $item->qtde; ?>
+                                    <?php $totalPerda += $item->valor * $item->qtde; ?>
                                 @endforeach
-                                Total geral: R$ {{ number_format($total, 2, ',', '.') }}
+                                Total perdas: <span style="color:red">- R$
+                                    {{ number_format($totalPerda, 2, ',', '.') }}</span>
                             @endif
                         </div>
                     </div>
@@ -156,19 +167,20 @@
             @endif
         </div>
         <script>
-            (() => {
-                'use strict'
-                const forms = document.querySelectorAll('.needs-validation')
-                Array.from(forms).forEach(form => {
-                    form.addEventListener('submit', event => {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-            })()
+            $('#totalgeral').text('R$ {{ number_format($totalGeral - $totalPerda, 2, ',', '.') }}')
+                (() => {
+                    'use strict'
+                    const forms = document.querySelectorAll('.needs-validation')
+                    Array.from(forms).forEach(form => {
+                        form.addEventListener('submit', event => {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+                })()
         </script>
     @else
         <div class="container">
