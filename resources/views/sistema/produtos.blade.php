@@ -4,7 +4,10 @@
     @if ($permitido)
         <div class="container">
             @include('assets.msg')
-            <h1>Produtos</h1>
+            <div class="row">
+                <h1>Produtos</h1>
+                <div class="float-end"><a href="/sistema" class="btn btn-primary btn-sm">Voltar</a></div>
+            </div>
             <button type="button" class="btn btn-primary mt-3" onclick="$('#modalAdd').modal('show')">Adicionar
                 Produto</button>
 
