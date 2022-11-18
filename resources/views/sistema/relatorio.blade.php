@@ -165,20 +165,21 @@
             @endif
         </div>
         <script>
+            (() => {
+                'use strict'
+                const forms = document.querySelectorAll('.needs-validation')
+                Array.from(forms).forEach(form => {
+                    form.addEventListener('submit', event => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+            })()
+
             $('#totalgeral').text('R$ {{ number_format($totalGeral - $totalPerda, 2, ',', '.') }}')
-                (() => {
-                    'use strict'
-                    const forms = document.querySelectorAll('.needs-validation')
-                    Array.from(forms).forEach(form => {
-                        form.addEventListener('submit', event => {
-                            if (!form.checkValidity()) {
-                                event.preventDefault()
-                                event.stopPropagation()
-                            }
-                            form.classList.add('was-validated')
-                        }, false)
-                    })
-                })()
         </script>
     @else
         <div class="container">
