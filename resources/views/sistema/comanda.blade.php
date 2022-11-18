@@ -22,61 +22,63 @@
         <hr>
         @if (isset($comanda))
             <?php $total = 0; ?>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Categoria</th>
-                        <th>Valor unitário</th>
-                        <th>Quantidade</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($comanda as $item)
-                        @if (empty($item->nome))
-                            <tr>
-                                <td>{{ $item->obs }}</td>
-                                <td></td>
-                                <td>{{ $item->qtde }}</td>
-                                <td></td>
-                            </tr>
-                        @else
-                            <tr>
-                                <td>
-                                    <a href="#"
-                                        onclick="if(confirm('Deletar {!! $item->qtde . ' ' . $item->nome !!}?')){window.location.href='{!! route('sistema.delete', [$cartao->id, $item->id]) !!}'}">
-                                        <i style="color:red;" class="fa-solid fa-trash m-2"></i>
-                                    </a>
-                                    {{ $item->nome }}
-                                </td>
-                                <td>
-                                    @php
-                                        switch ($item->categoria) {
-                                            case '1':
-                                                echo 'Bebidas Alcoólicas';
-                                                break;
-                                            case '2':
-                                                echo 'Porções';
-                                                break;
-                                            case '3':
-                                                echo 'Bebidas';
-                                                break;
-                                            case '4':
-                                                echo 'Doces e Sobremesas';
-                                                break;
-                                        }
-                                    @endphp
-                                </td>
-                                <td>R$ {{ number_format($item->valor, 2, ',', '.') }}</td>
-                                <td>{{ $item->qtde }}</td>
-                                <td>R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}</td>
-                                <?php $total += $item->valor * $item->qtde; ?>
-                            </tr>
-                        @endif
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Categoria</th>
+                            <th>Valor unitário</th>
+                            <th>Quantidade</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($comanda as $item)
+                            @if (empty($item->nome))
+                                <tr>
+                                    <td>{{ $item->obs }}</td>
+                                    <td></td>
+                                    <td>{{ $item->qtde }}</td>
+                                    <td></td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td>
+                                        <a href="#"
+                                            onclick="if(confirm('Deletar {!! $item->qtde . ' ' . $item->nome !!}?')){window.location.href='{!! route('sistema.delete', [$cartao->id, $item->id]) !!}'}">
+                                            <i style="color:red;" class="fa-solid fa-trash m-2"></i>
+                                        </a>
+                                        {{ $item->nome }}
+                                    </td>
+                                    <td>
+                                        @php
+                                            switch ($item->categoria) {
+                                                case '1':
+                                                    echo 'Bebidas Alcoólicas';
+                                                    break;
+                                                case '2':
+                                                    echo 'Porções';
+                                                    break;
+                                                case '3':
+                                                    echo 'Bebidas';
+                                                    break;
+                                                case '4':
+                                                    echo 'Doces e Sobremesas';
+                                                    break;
+                                            }
+                                        @endphp
+                                    </td>
+                                    <td>R$ {{ number_format($item->valor, 2, ',', '.') }}</td>
+                                    <td>{{ $item->qtde }}</td>
+                                    <td>R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}</td>
+                                    <?php $total += $item->valor * $item->qtde; ?>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
             <h3>Total Geral: R$ {{ number_format($total, 2, ',', '.') }}</h3>
             <div>
                 <a href="#" onclick="$('#modalPagar').modal('show')" class="btn btn-success">Pagar</a>

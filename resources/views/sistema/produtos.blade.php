@@ -16,66 +16,67 @@
                     <input class="form-control" type="text" id="search" name="search">
                 </div>
             </form>
-
-            <table class="table table-hover table-striped mt-5">
-                <thead>
-                    <th width="80"></th>
-                    <th>NOME</th>
-                    <th width="200">ESTOQUE</th>
-                    <th width="200">CATEGORIA</th>
-                    <th width="100">VALOR COMPRA</th>
-                    <th width="100">VALOR VENDA</th>
-                </thead>
-                <tbody>
-                    @foreach ($itens as $item)
-                        <tr>
-                            <td>
-                                <a href="#" class="mx-1"
-                                    onclick="editar('{!! $item->id !!}', '{!! $item->nome !!}', '{!! $item->valor !!}', '{!! $item->valorCompra !!}', '{!! $item->categoria !!}')"><i
-                                        class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="#" class="mx-1"
-                                    onclick="if(confirm('Deletar {!! $item->nome !!}?')){window.location.href='{!! route('sistema.deleteProduto', $item->id) !!}'}"
-                                    style="color:red">
-                                    <i class="fa-solid fa-trash"></i></a>
-                            <td>
-                                {{ $item->nome }}
-                            </td>
-                            <td>
-                                {{ $item->qtde }}
-                            </td>
-                            <td>
-                                @php
-                                    switch ($item->categoria) {
-                                        case '1':
-                                            echo 'Bebidas Alcoólicas';
-                                            break;
-                                        case '2':
-                                            echo 'Porções';
-                                            break;
-                                        case '3':
-                                            echo 'Bebidas';
-                                            break;
-                                        case '4':
-                                            echo 'Doces e Sobremesas';
-                                            break;
-                                    }
-                                @endphp
-                            </td>
-                            <td>
-                                R$ {{ number_format($item->valorCompra, 2, ',', '.') }}
-                            </td>
-                            <td>
-                                R$ {{ number_format($item->valor, 2, ',', '.') }}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @else
-        <div class="container">
-            <h1>Acesso negado para o usuário: {{ Auth::user()->name }}</h1>
-        </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mt-5">
+                    <thead>
+                        <th width="80"></th>
+                        <th>NOME</th>
+                        <th>ESTOQUE</th>
+                        <th>CATEGORIA</th>
+                        <th>VALOR COMPRA</th>
+                        <th>VALOR VENDA</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($itens as $item)
+                            <tr>
+                                <td>
+                                    <a href="#" class="mx-1"
+                                        onclick="editar('{!! $item->id !!}', '{!! $item->nome !!}', '{!! $item->valor !!}', '{!! $item->valorCompra !!}', '{!! $item->categoria !!}')"><i
+                                            class="fa-solid fa-pen-to-square"></i></a>
+                                    <a href="#" class="mx-1"
+                                        onclick="if(confirm('Deletar {!! $item->nome !!}?')){window.location.href='{!! route('sistema.deleteProduto', $item->id) !!}'}"
+                                        style="color:red">
+                                        <i class="fa-solid fa-trash"></i></a>
+                                <td>
+                                    {{ $item->nome }}
+                                </td>
+                                <td>
+                                    {{ $item->qtde }}
+                                </td>
+                                <td>
+                                    @php
+                                        switch ($item->categoria) {
+                                            case '1':
+                                                echo 'Bebidas Alcoólicas';
+                                                break;
+                                            case '2':
+                                                echo 'Porções';
+                                                break;
+                                            case '3':
+                                                echo 'Bebidas';
+                                                break;
+                                            case '4':
+                                                echo 'Doces e Sobremesas';
+                                                break;
+                                        }
+                                    @endphp
+                                </td>
+                                <td>
+                                    R$ {{ number_format($item->valorCompra, 2, ',', '.') }}
+                                </td>
+                                <td>
+                                    R$ {{ number_format($item->valor, 2, ',', '.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <div class="table-responsive">
+                </div>
+            @else
+                <div class="container">
+                    <h1>Acesso negado para o usuário: {{ Auth::user()->name }}</h1>
+                </div>
     @endif
     <div class="modal fade" id="modalAdd" aria-hidden="true">
         <div class="modal-dialog">

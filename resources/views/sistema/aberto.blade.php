@@ -14,35 +14,33 @@
                     <input class="form-control" type="text" id="search" name="nome">
                 </div>
             </form>
-
-            <table class="table table-hover table-striped mt-5">
-                <thead>
-                    <th width="40"></th>
-                    <th>NOME</th>
-                    <th>Data de Entrada</th>
-                </thead>
-                <tbody>
-                    @foreach ($comandas as $comanda)
-                        {{-- NAO LISTAR COMANDA 999 E 888. PELO CONTROLLER --}}
-                        {{-- @if ($comanda->nome) --}}
-                        <tr>
-                            <td>
-                                <a href="{{ route('sistema.indexAberto', ['card_id' => $comanda->card_id]) }}">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                            </td>
-                            <td>
-                                {{ $comanda->nome }}
-                            </td>
-                            <td>
-                                {{ date('d/m/Y', strtotime($comanda->updated_at)) }} as
-                                {{ date('H:i:s', strtotime($comanda->updated_at)) }}
-                            </td>
-                        </tr>
-                        {{-- @endif --}}
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mt-5">
+                    <thead>
+                        <th width="40"></th>
+                        <th>NOME</th>
+                        <th>Data de Entrada</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($comandas as $comanda)
+                            <tr>
+                                <td>
+                                    <a href="{{ route('sistema.indexAberto', ['card_id' => $comanda->card_id]) }}">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ $comanda->nome }}
+                                </td>
+                                <td>
+                                    {{ date('d/m/Y', strtotime($comanda->updated_at)) }} as
+                                    {{ date('H:i:s', strtotime($comanda->updated_at)) }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     @else
         <div class="container">

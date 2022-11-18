@@ -60,12 +60,16 @@ class SistemaController extends Controller
     public function searchComanda(Request $request)
     {
         if (isset($request->code)) {
-            $cartao = CartaoModel::where('code', '=', $request->code)->first();
-            if (isset($cartao->id)) {
-                return $this->index($cartao->id);
+            if ($request->code != 888 && $request->code != 999) {
+                $cartao = CartaoModel::where('code', '=', $request->code)->first();
+                if (isset($cartao->id)) {
+                    return $this->index($cartao->id);
+                }
+            } else {
+                return redirect()->to('sistema')->with('erroMsg', 'Cartão indisponivel');
             }
         }
-        return $this->index();
+        return redirect()->to('sistema')->with('erroMsg', 'Cartão não encontrado.');
     }
 
     public function searchNome(Request $request)
@@ -84,7 +88,7 @@ class SistemaController extends Controller
         if (isset($request->nome)) {
             $comandas = ComandaModel::where([
                 ['pago', '0'],
-                ['nome', 'LIKE', '%' . $request->nome . '%']
+                ['cartao.nome', 'LIKE', '%' . $request->nome . '%']
             ])
                 ->leftJoin(
                     'cartao',
@@ -92,7 +96,7 @@ class SistemaController extends Controller
                     '=',
                     'cartao.id'
                 )
-                ->select('comanda.*', 'cartao.nome', 'cartao.updated_at')
+                ->select('comanda.*', 'comanda.nome as comandaNome', 'cartao.nome', 'cartao.updated_at')
                 ->groupBy('card_id')->get();
             $permitido = $this->permissao(Auth::user()->id);
             return view('sistema.aberto', compact('permitido', 'comandas'));
@@ -102,22 +106,18 @@ class SistemaController extends Controller
 
     public function aberto()
     {
-        $comandas = ComandaModel::where([['pago', '0']]) // verificar se isso funciona
-
-
-            // ->orWhere([
-            //     ['comanda.card_id', '!=', 999],
-            //     ['comanda.card_id', '!=', 888]
-            // ])
-
-
+        $comandas = ComandaModel::where([
+            ['pago', '0'],
+            ['comanda.card_id', '!=', 888],
+            ['comanda.card_id', '!=', 999]
+        ])
             ->leftJoin(
                 'cartao',
                 'comanda.card_id',
                 '=',
                 'cartao.id'
             )
-            ->select('comanda.*', 'cartao.nome')
+            ->select('comanda.*', 'comanda.nome as comandaNome', 'cartao.nome')
             ->groupBy('card_id')->get();
         $permitido = $this->permissao(Auth::user()->id);
         return view('sistema.aberto', compact('permitido', 'comandas'));
