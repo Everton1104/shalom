@@ -8,6 +8,7 @@ use App\Models\ComandaModel;
 use App\Models\ItemModel;
 use App\Models\CartaoModel;
 use App\Models\EstoqueModel;
+use App\Models\HistoricoModel;
 
 class SistemaController extends Controller
 {
@@ -17,6 +18,8 @@ class SistemaController extends Controller
             case '1':
                 return true;
             case '2':
+                return true;
+            case '7':
                 return true;
             default:
                 return false;
@@ -159,6 +162,11 @@ class SistemaController extends Controller
     {
         if (isset($request->card_id)) {
             $cartao = CartaoModel::where('id', $request->card_id)->first() ?? false;
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 1,
+                'obs' => Auth::user()->name . ' alterou o nome ' . $cartao->nome . ' do cartao ' . $cartao->id . ' para ' . $request->nome
+            ]);
             if ($cartao) {
                 $cartao->update(['nome' => $request->nome]);
                 return $this->index($cartao->id);
@@ -170,17 +178,25 @@ class SistemaController extends Controller
 
     public function store(Request $request)
     {
-        if (isset($request->id) && isset($request->card_id)) {
-            ComandaModel::create(
+        if (isset($request->id) && isset($request->card_id) && isset($request->qtde)) {
+            $item = ItemModel::where('id', $request->id)->first();
+            $comanda = ComandaModel::create(
                 [
                     'item_id' => $request->id,
                     'card_id' => $request->card_id,
                     'qtde' => $request->qtde,
+                    'registro' => "Registrado por " . Auth::user()->name . " no valor de R$ " . number_format($item->valor, 2, ',', '.')
                 ]
             );
             $estoque = EstoqueModel::where('item_id', $request->id)->first();
             EstoqueModel::where('item_id', $request->id)->update([
                 'qtde' => $estoque->qtde - $request->qtde,
+            ]);
+            $cartao = CartaoModel::where('id', $comanda->card_id)->first();
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 2,
+                'obs' => Auth::user()->name . ' criou o pedido ' . $comanda->id . ' de ' . $cartao->nome
             ]);
             return $this->index($request->card_id);
         } else {
@@ -201,9 +217,16 @@ class SistemaController extends Controller
     {
         if (isset(ComandaModel::where('id', $id)->first()->id)) {
             $comanda = ComandaModel::where('id', $id)->first();
+            $cartao = CartaoModel::where('id', $comanda->card_id)->first();
             $estoque = EstoqueModel::where('item_id', $comanda->item_id)->first();
+            $item = ItemModel::where('id', $comanda->item_id)->first();
             EstoqueModel::where('item_id', $comanda->item_id)->update([
                 'qtde' => $estoque->qtde + $comanda->qtde
+            ]);
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 3,
+                'obs' => Auth::user()->name . ' removeu ' . $comanda->qtde . ' X ' . $item->nome . ' no valor un. de R$ ' . number_format($item->valor, 2, ',', '.') . ' da comanda de ' . $cartao->nome
             ]);
             $comanda->delete();
         }
@@ -213,7 +236,7 @@ class SistemaController extends Controller
     public function pagar(Request $request)
     {
         if (isset(ComandaModel::where('card_id', $request->card)->first()->id)) {
-            ComandaModel::where([
+            $comanda = ComandaModel::where([
                 ['card_id', $request->card],
                 ['pago', '0'],
             ])->update([
@@ -221,7 +244,27 @@ class SistemaController extends Controller
                 'tipo' => $request->tipo,
                 'nome' => $request->nome,
             ]);
+            $cartao = CartaoModel::where('id', $request->card)->first();
             CartaoModel::where('id', $request->card)->update(['nome' => null]);
+            switch ($request->tipo) {
+                case '1':
+                    $tipo = 'Débito';
+                    break;
+                case '2':
+                    $tipo = 'Crédito';
+                    break;
+                case '3':
+                    $tipo = 'PIX';
+                    break;
+                case '4':
+                    $tipo = 'Dinheiro';
+                    break;
+            }
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 4,
+                'obs' => Auth::user()->name . ' registrou o pagamento via ' . $tipo . ' no valor de R$ ' . number_format($request->total, 2, ',', '.') . ' da comanda de ' . $cartao->nome
+            ]);
             return redirect()->back()->with('msg', 'Comanda paga.');
         }
         return redirect()->back()->with('erroMsg', 'Comanda vazia.');
@@ -232,6 +275,11 @@ class SistemaController extends Controller
         if (!empty($request->code)) {
             try {
                 $cartao = CartaoModel::create(['code' => $request->code]);
+                HistoricoModel::create([
+                    'user_id' => Auth::user()->id,
+                    'operacao' => 5,
+                    'obs' => Auth::user()->name . ' cadastrou um novo cartão: ' . $cartao->code
+                ]);
                 return redirect()->back()->with('msg', 'Cartão ' . $cartao->code . ' criado.');
             } catch (\Throwable $th) {
                 return redirect()->back()->with('erroMsg', 'Este cartão já existe.');
@@ -264,10 +312,17 @@ class SistemaController extends Controller
             $estoque = EstoqueModel::create([
                 'item_id' => $item->id,
                 'valor' => $request->valorCompra,
-                'qtde' => $request->qtde
+                'qtde' => $request->qtde,
+                'user' => Auth::user()->name,
+                'obs' => Auth::user()->name . " criou " . $request->nome . " com " . $request->qtde . " unidades em " . date('d/m/Y') . ' as ' . date('H:i:s') . ' valor un. R$' . number_format($request->valorCompra, 2, ',', '.'),
             ]);
             ItemModel::where('id', $item->id)->update([
                 'estoque_id' => $estoque->id
+            ]);
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 6,
+                'obs' => Auth::user()->name . ' cadastrou um novo produto: ' . $request->qtde . ' X ' . $request->nome . ' no valor de venda de R$ ' . number_format($request->valor, 2, ',', '.') . ' e compra R$ ' . number_format($request->valorCompra, 2, ',', '.') . ' a unidade.'
             ]);
             return redirect()->back()->with('msg', 'Adicionado');
         } else {
@@ -284,6 +339,11 @@ class SistemaController extends Controller
             ]);
             ItemModel::where('id', $id)->delete();
             EstoqueModel::where('item_id', $id)->delete();
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 7,
+                'obs' => Auth::user()->name . ' apagou o produto ' . $item->nome . ' valor un. R$' . number_format($item->valor, 2, ',', '.')
+            ]);
             return redirect()->back()->with('msg', $item->nome . " apagado.");
         } catch (\Throwable $th) {
             return redirect()->back()->with('erroMsg', "Erro ao apagar" . $th);
@@ -293,13 +353,21 @@ class SistemaController extends Controller
     public function editarProduto(Request $request)
     {
         if (!empty($request->nome) && !empty($request->valor) && !empty($request->id) && !empty($request->valorCompra) && !empty($request->categoria)) {
+            $item = ItemModel::where('id', $request->id)->first();
             ItemModel::where('id', $request->id)->update([
                 'nome' => $request->nome,
                 'valor' => $request->valor,
                 'categoria' => $request->categoria,
             ]);
+            $estoque = EstoqueModel::where('item_id', $request->id)->first();
             EstoqueModel::where('item_id', $request->id)->update([
                 'valor' => $request->valorCompra,
+            ]);
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 8,
+                'obs' => Auth::user()->name . ' alterou o produto ' . $item->nome . ' valor un. R$' . number_format($item->valor, 2, ',', '.') . ' valor de compra un. R$' . number_format($estoque->valor, 2, ',', '.') . ' categoria ' . $item->categoria . ' para: ' .
+                    $request->nome . ' valor un. R$' . number_format($request->valor, 2, ',', '.') . ' valor de compra un. R$' . number_format($request->valorCompra, 2, ',', '.') . ' categoria ' . $request->categoria
             ]);
             return redirect()->back()->with('msg', "Atualizado.");
         }
@@ -335,10 +403,16 @@ class SistemaController extends Controller
     {
         if (!empty($request->qtde) && !empty($request->item_id)) {
             $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
+            $item = ItemModel::where('id', $request->item_id)->first();
             EstoqueModel::where('item_id', $request->item_id)->update([
                 'qtde' => $estoque->qtde + $request->qtde,
-                'user' => Auth::user()->nome,
+                'user' => Auth::user()->name,
                 'obs' => Auth::user()->name . ' registrou a entrada de ' . $request->qtde . ' destes produtos em ' . date('d/m/Y') . ' as ' . date('H:i:s'),
+            ]);
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 9,
+                'obs' => Auth::user()->name . ' registrou a entrada de ' . $request->qtde . ' unidades de ' . $item->nome
             ]);
             return redirect()->back()->with('msg', 'Adicionado ao estoque');
         }
@@ -349,10 +423,16 @@ class SistemaController extends Controller
     {
         if (!empty($request->qtde) && !empty($request->item_id)) {
             $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
+            $item = ItemModel::where('id', $request->item_id)->first();
             EstoqueModel::where('item_id', $request->item_id)->update([
                 'qtde' => $estoque->qtde - $request->qtde,
                 'user' => Auth::user()->nome,
                 'obs' => Auth::user()->name . ' registrou a remoção de ' . $request->qtde . ' destes produtos em ' . date('d/m/Y') . ' as ' . date('H:i:s'),
+            ]);
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 10,
+                'obs' => Auth::user()->name . ' removeu ' . $request->qtde . ' unidades de ' . $item->nome . ' do estoque.'
             ]);
             return redirect()->back()->with('msg', 'Removido do estoque');
         }
@@ -362,6 +442,7 @@ class SistemaController extends Controller
     public function extravio(Request $request)
     {
         if (!empty($request->qtde) && !empty($request->item_id)) {
+            $item = ItemModel::where('id', $request->item_id)->first();
             ComandaModel::create(
                 [
                     'item_id' => $request->item_id,
@@ -374,6 +455,11 @@ class SistemaController extends Controller
             EstoqueModel::where('item_id', $request->item_id)->update([
                 'qtde' => $estoque->qtde - $request->qtde,
             ]);
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 11,
+                'obs' => Auth::user()->name . ' registrou a perda de ' . $request->qtde . ' unidades de ' . $item->nome
+            ]);
             return redirect()->back()->with('msg', 'Produto(os) extraviado(os).');
         }
         return redirect()->back()->with('erroMsg', 'Erro ao cadastrar.');
@@ -382,6 +468,7 @@ class SistemaController extends Controller
     public function bonificacao(Request $request)
     {
         if (!empty($request->qtde) && !empty($request->item_id) && !empty($request->code)) {
+            $item = ItemModel::where('id', $request->item_id)->first();
             $card = CartaoModel::where('code', $request->code)->first();
             ComandaModel::create(
                 [
@@ -395,6 +482,11 @@ class SistemaController extends Controller
             $estoque = EstoqueModel::where('item_id', $request->item_id)->first();
             EstoqueModel::where('item_id', $request->item_id)->update([
                 'qtde' => $estoque->qtde - $request->qtde,
+            ]);
+            HistoricoModel::create([
+                'user_id' => Auth::user()->id,
+                'operacao' => 11,
+                'obs' => Auth::user()->name . ' registrou a bonificação de ' . $request->qtde . ' unidades de ' . $item->nome . ' para ' . $card->nome
             ]);
             return redirect()->to('searchComanda?code=' . $request->code)->with('msg', 'Produto(os) bonificado(os).');
         }
@@ -446,7 +538,13 @@ class SistemaController extends Controller
                         '=',
                         'itens.id'
                     )
-                    ->select('comanda.*', 'itens.nome as itemNome', 'itens.valor', 'itens.id as itemId')->get();
+                    ->leftJoin(
+                        'estoque',
+                        'comanda.item_id',
+                        '=',
+                        'estoque.item_id'
+                    )
+                    ->select('comanda.*', 'itens.nome as itemNome', 'estoque.valor', 'itens.id as itemId')->get();
                 $bonificacao = ComandaModel::whereBetween(
                     'comanda.updated_at',
                     [date('Y-m-d', strtotime($request->dataInit)), date('Y-m-d', strtotime('+1 days', strtotime($request->dataFim)))]
@@ -458,7 +556,13 @@ class SistemaController extends Controller
                         '=',
                         'itens.id'
                     )
-                    ->select('comanda.*', 'itens.nome as itemNome', 'itens.valor', 'itens.id as itemId')->get();
+                    ->leftJoin(
+                        'estoque',
+                        'comanda.item_id',
+                        '=',
+                        'estoque.item_id'
+                    )
+                    ->select('comanda.*', 'itens.nome as itemNome', 'estoque.valor', 'itens.id as itemId')->get();
                 $permitido = $this->permissao(Auth::user()->id);
                 return view('sistema.relatorio', compact('permitido', 'resumo', 'request', 'extravio', 'bonificacao'));
             } else {

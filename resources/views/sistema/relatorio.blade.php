@@ -49,7 +49,7 @@
                         </thead>
                         <tbody>
                             @foreach ($resumo as $item)
-                                <tr>
+                                @if (!$item->itemNome)
                                     <td>
                                         {{ date('d/m/Y', strtotime($item->updated_at)) }} as
                                         {{ date('H:i:s', strtotime($item->updated_at)) }}
@@ -76,35 +76,75 @@
                                         @endphp
                                     </td>
                                     <td>
-                                        {{ $item->itemNome }}
+                                        {{ $item->obs }}
                                     </td>
                                     <td>
                                         {{ $item->qtde }}
                                     </td>
                                     <td>
-                                        R$ {{ number_format($item->valor, 2, ',', '.') }}
+                                        -
                                     </td>
                                     <td>
-                                        R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}
+                                        -
                                     </td>
-                                </tr>
-                                @php
-                                    switch ($item->tipo) {
-                                        case '1':
-                                            $totalDebito += $item->valor * $item->qtde;
-                                            break;
-                                        case '2':
-                                            $totalCredito += $item->valor * $item->qtde;
-                                            break;
-                                        case '3':
-                                            $totalPix += $item->valor * $item->qtde;
-                                            break;
-                                        case '4':
-                                            $totalDinheiro += $item->valor * $item->qtde;
-                                            break;
-                                    }
-                                    $totalGeral += $item->valor * $item->qtde;
-                                @endphp
+                                @else
+                                    <tr>
+                                        <td>
+                                            {{ date('d/m/Y', strtotime($item->updated_at)) }} as
+                                            {{ date('H:i:s', strtotime($item->updated_at)) }}
+                                        </td>
+                                        <td>
+                                            {{ $item->nome }}
+                                        </td>
+                                        <td>
+                                            @php
+                                                switch ($item->tipo) {
+                                                    case '1':
+                                                        echo 'Débito';
+                                                        break;
+                                                    case '2':
+                                                        echo 'Crédito';
+                                                        break;
+                                                    case '3':
+                                                        echo 'PIX';
+                                                        break;
+                                                    case '4':
+                                                        echo 'Dinheiro';
+                                                        break;
+                                                }
+                                            @endphp
+                                        </td>
+                                        <td>
+                                            {{ $item->itemNome }}
+                                        </td>
+                                        <td>
+                                            {{ $item->qtde }}
+                                        </td>
+                                        <td>
+                                            R$ {{ number_format($item->valor, 2, ',', '.') }}
+                                        </td>
+                                        <td>
+                                            R$ {{ number_format($item->valor * $item->qtde, 2, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                    @php
+                                        switch ($item->tipo) {
+                                            case '1':
+                                                $totalDebito += $item->valor * $item->qtde;
+                                                break;
+                                            case '2':
+                                                $totalCredito += $item->valor * $item->qtde;
+                                                break;
+                                            case '3':
+                                                $totalPix += $item->valor * $item->qtde;
+                                                break;
+                                            case '4':
+                                                $totalDinheiro += $item->valor * $item->qtde;
+                                                break;
+                                        }
+                                        $totalGeral += $item->valor * $item->qtde;
+                                    @endphp
+                                @endif
                             @endforeach
                         </tbody>
                     </table>

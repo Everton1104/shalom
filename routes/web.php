@@ -21,6 +21,8 @@ function permissao($id)
             return true;
         case '2':
             return true;
+        case '7':
+            return true;
         default:
             return false;
     }

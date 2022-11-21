@@ -110,7 +110,7 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button class="btn btn-success" onclick="$('#formAdd').submit()">Enviar</button>
+                    <button class="btn btn-success" onclick="addProduto(event)">Enviar</button>
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -144,7 +144,7 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button class="btn btn-success" onclick="$('#formEdt').submit()">Enviar</button>
+                    <button class="btn btn-success" onclick="edtProduto(event)">Enviar</button>
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -163,6 +163,24 @@
             setTimeout(function() {
                 $('#modalEdt').modal('show')
             }, 150)
+        }
+
+        function addProduto(e) {
+            e.preventDefault();
+            if (parseFloat($('#valorCompraAdd').val()) >= parseFloat($('#valorAdd').val())) {
+                alert("ATENÇÃO VOCÊ ESTA CADASTRANDO UM PRODUTO COM VALOR DE VENDA MENOR OU IGUAL AO PREÇO DE COMPRA!");
+            } else {
+                $('#formAdd').submit()
+            }
+        }
+
+        function edtProduto(e) {
+            e.preventDefault();
+            if (parseFloat($('#valorCompraEdt').val()) >= parseFloat($('#valorEdt').val())) {
+                alert("ATENÇÃO VOCÊ ESTA CADASTRANDO UM PRODUTO COM VALOR DE VENDA MENOR OU IGUAL AO PREÇO DE COMPRA!");
+            } else {
+                $('#formEdt').submit()
+            }
         }
     </script>
 @endsection

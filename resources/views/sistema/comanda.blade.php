@@ -107,6 +107,7 @@
                                 <div class="my-3">
                                     Total Geral: R$ {{ number_format($total, 2, ',', '.') }}
                                 </div>
+                                <input type="text" class="d-none" name="total" value="{{ $total }}" />
                             </div>
                             <button type="submit" id="btnPagar" class="d-none"></button>
                         </form>
