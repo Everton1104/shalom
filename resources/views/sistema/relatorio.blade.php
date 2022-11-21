@@ -21,11 +21,11 @@
                 @csrf
                 @method('POST')
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
                         <label for="dataInit" class="form-label">Selecione a data de início</label>
                         <input class="form-control" type="date" id="dataInit" name="dataInit" required>
                     </div>
-                    <div class="col-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
                         <label for="dataFim" class="form-label">Selecione a data de término</label>
                         <input class="form-control" type="date" id="dataFim" name="dataFim" required>
                     </div>
