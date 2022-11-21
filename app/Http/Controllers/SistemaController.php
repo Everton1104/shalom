@@ -13,17 +13,15 @@ use App\Models\HistoricoModel;
 class SistemaController extends Controller
 {
     public function permissao($id)
-    { // Lista de id's permitidos
-        switch ($id) {
-            case '1':
+    {
+        $permitidos = explode(',', env('PERMITIDO'));
+
+        foreach ($permitidos as $permitido) {
+            if ($permitido == $id) {
                 return true;
-            case '2':
-                return true;
-            case '7':
-                return true;
-            default:
-                return false;
+            }
         }
+        return false;
     }
 
     public function requestAPI(array $dados = ['method' => 'GET', 'url' => '', 'conteudo' => ['']])

@@ -16,16 +16,14 @@ use Illuminate\Support\Facades\Auth;
 
 function permissao($id)
 {
-    switch ($id) {
-        case '1':
+    $permitidos = explode(',', env('PERMITIDO'));
+
+    foreach ($permitidos as $permitido) {
+        if ($permitido == $id) {
             return true;
-        case '2':
-            return true;
-        case '7':
-            return true;
-        default:
-            return false;
+        }
     }
+    return false;
 }
 
 Auth::routes();
