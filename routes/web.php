@@ -28,13 +28,11 @@ function permissao($id)
 
 Auth::routes();
 
-Route::get('/', function () {
-    $permitido = isset(Auth::user()->id) ? permissao(Auth::user()->id) : false;
-    return view('welcome', compact('permitido'));
-});
+Route::get('/', 'App\Http\Controllers\HomeController@index');
 
 Route::any('altPass', 'App\Http\Controllers\SistemaController@alterarSenha')->name('altPass')->middleware('auth');
 
+Route::any('sistema/historico', 'App\Http\Controllers\SistemaController@indexHistorico')->name('sistema.historico')->middleware('auth');
 Route::any('sistema/bonificacao', 'App\Http\Controllers\SistemaController@bonificacao')->name('sistema.bonificacao')->middleware('auth');
 Route::any('sistema/extravio', 'App\Http\Controllers\SistemaController@extravio')->name('sistema.extravio')->middleware('auth');
 Route::any('sistema/estoque/remove', 'App\Http\Controllers\SistemaController@removeEstoque')->name('sistema.removeEstoque')->middleware('auth');

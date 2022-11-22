@@ -2,27 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\ItemModel;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function permissao($id)
     {
-        $this->middleware('auth');
+        $permitidos = explode(',', env('PERMITIDO'));
+
+        foreach ($permitidos as $permitido) {
+            if ($permitido == $id) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        return view('home');
+        $alcoolicas = ItemModel::where('categoria', 1)
+            ->leftJoin(
+                'estoque',
+                'estoque.item_id',
+                '=',
+                'itens.estoque_id'
+            )
+            ->select('itens.*', 'estoque.qtde')->get();
+
+        $porcoes = ItemModel::where('categoria', 2)
+            ->leftJoin(
+                'estoque',
+                'estoque.item_id',
+                '=',
+                'itens.estoque_id'
+            )
+            ->select('itens.*', 'estoque.qtde')->get();
+
+        $bebidas = ItemModel::where('categoria', 3)
+            ->leftJoin(
+                'estoque',
+                'estoque.item_id',
+                '=',
+                'itens.estoque_id'
+            )
+            ->select('itens.*', 'estoque.qtde')->get();
+
+        $doces = ItemModel::where('categoria', 4)
+            ->leftJoin(
+                'estoque',
+                'estoque.item_id',
+                '=',
+                'itens.estoque_id'
+            )
+            ->select('itens.*', 'estoque.qtde')->get();
+
+        $permitido = $this->permissao(Auth::user()->id ?? false);
+        return view('welcome', compact('permitido', 'alcoolicas', 'porcoes', 'bebidas', 'doces'));
     }
 }

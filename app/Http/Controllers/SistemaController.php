@@ -12,6 +12,11 @@ use App\Models\HistoricoModel;
 
 class SistemaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function permissao($id)
     {
         $permitidos = explode(',', env('PERMITIDO'));
@@ -270,20 +275,24 @@ class SistemaController extends Controller
 
     public function addCard(Request $request)
     {
-        if (!empty($request->code)) {
-            try {
-                $cartao = CartaoModel::create(['code' => $request->code]);
-                HistoricoModel::create([
-                    'user_id' => Auth::user()->id,
-                    'operacao' => 5,
-                    'obs' => Auth::user()->name . ' cadastrou um novo cartão: ' . $cartao->code
-                ]);
-                return redirect()->back()->with('msg', 'Cartão ' . $cartao->code . ' criado.');
-            } catch (\Throwable $th) {
-                return redirect()->back()->with('erroMsg', 'Este cartão já existe.');
+        if (Auth::user()->id == 1 || Auth::user()->id == 2) {
+            if (!empty($request->code)) {
+                try {
+                    $cartao = CartaoModel::create(['code' => $request->code]);
+                    HistoricoModel::create([
+                        'user_id' => Auth::user()->id,
+                        'operacao' => 5,
+                        'obs' => Auth::user()->name . ' cadastrou um novo cartão: ' . $cartao->code
+                    ]);
+                    return redirect()->back()->with('msg', 'Cartão ' . $cartao->code . ' criado.');
+                } catch (\Throwable $th) {
+                    return redirect()->back()->with('erroMsg', 'Este cartão já existe.');
+                }
             }
+            return redirect()->back()->with('erroMsg', 'Valor inválido');
+        } else {
+            return redirect()->back()->with('erroMsg', Auth::user()->name . ' não tem permissão para cadastrar.');
         }
-        return redirect()->back()->with('erroMsg', 'Valor inválido');
     }
 
     public function indexProdutos()
@@ -569,5 +578,13 @@ class SistemaController extends Controller
         }
         $permitido = $this->permissao(Auth::user()->id);
         return view('sistema.relatorio', compact('permitido'));
+    }
+
+    public function indexHistorico(Request $request)
+    {
+        // if (Auth::user()->id == 1 || Auth::user()->id == 2) {
+        $permitido = $this->permissao(Auth::user()->id);
+        return view('sistema.historico', compact('permitido'));
+        // }
     }
 }

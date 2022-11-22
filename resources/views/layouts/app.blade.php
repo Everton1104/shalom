@@ -23,6 +23,7 @@
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.11.2/jquery.typeahead.min.js"></script>
+    @yield('style')
     @yield('scriptTop')
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -82,6 +83,11 @@
                                         <a class="dropdown-item" href="{{ route('sistema.relatorio') }}">
                                             {{ __('Relatórios') }}
                                         </a>
+                                        @if (Auth::user()->id == 1 || Auth::user()->id == 2)
+                                            <a class="dropdown-item" href="{{ route('sistema.historico') }}">
+                                                {{ __('Histórico') }}
+                                            </a>
+                                        @endif
                                     @endif
                                     <a class="dropdown-item" href="#" onclick="$('#modalAltPass').modal('show')">
                                         {{ __('Alterar Senha') }}
