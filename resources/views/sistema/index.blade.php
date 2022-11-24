@@ -7,7 +7,7 @@
 
         <div class="container">
             <div class="mb-5 row text-center">
-                @if (Auth::user()->id == 1 || Auth::user()->id == 2)
+                @if (Auth::user()->id == 1 || Auth::user()->id == 2 || Auth::user()->id == 7)
                     <div class="col m-2">
                         <button class="btn btn-success" onclick="$('#addCard').modal('show')">Cadastrar Cartão</button>
                     </div>

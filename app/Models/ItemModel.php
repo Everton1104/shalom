@@ -15,6 +15,7 @@ class ItemModel extends Model
         'id',
         'nome',
         'categoria',
+        'qtde',
         'estoque_id',
         'valor',
     ];

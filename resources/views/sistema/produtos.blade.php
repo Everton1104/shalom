@@ -28,23 +28,30 @@
                         <th>CATEGORIA</th>
                         <th>VALOR COMPRA</th>
                         <th>VALOR VENDA</th>
+                        <th>GRAMAS POR UNIDADE</th>
                     </thead>
                     <tbody>
                         @foreach ($itens as $item)
                             <tr>
                                 <td>
-                                    <a href="#" class="mx-1"
-                                        onclick="editar('{!! $item->id !!}', '{!! $item->nome !!}', '{!! $item->valor !!}', '{!! $item->valorCompra !!}', '{!! $item->categoria !!}')"><i
-                                            class="fa-solid fa-pen-to-square"></i></a>
-                                    <a href="#" class="mx-1"
-                                        onclick="if(confirm('Deletar {!! $item->nome !!}?')){window.location.href='{!! route('sistema.deleteProduto', $item->id) !!}'}"
-                                        style="color:red">
-                                        <i class="fa-solid fa-trash"></i></a>
+                                    @if ($item->categoria == 5)
+                                        <a href="#" class="mx-1"
+                                            onclick="editar(JSON.parse('{{ json_encode($item) }}'))"><i
+                                                class="fa-solid fa-pen-to-square"></i></a>
+                                    @else
+                                        <a href="#" class="mx-1"
+                                            onclick="editar(JSON.parse('{{ json_encode($item) }}'))"><i
+                                                class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="#" class="mx-1"
+                                            onclick="if(confirm('Deletar {!! $item->nome !!}?')){window.location.href='{!! route('sistema.deleteProduto', $item->id) !!}'}"
+                                            style="color:red">
+                                            <i class="fa-solid fa-trash"></i></a>
+                                    @endif
                                 <td>
                                     {{ $item->nome }}
                                 </td>
                                 <td>
-                                    {{ $item->qtde }}
+                                    {{ $item->qtdeEstoque }}
                                 </td>
                                 <td>
                                     @php
@@ -70,6 +77,11 @@
                                 <td>
                                     R$ {{ number_format($item->valor, 2, ',', '.') }}
                                 </td>
+                                @if ($item->categoria == 2 || $item->categoria == 5)
+                                    <td>
+                                        {{ $item->qtde }}g
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
@@ -94,18 +106,28 @@
                         <label for="nome">Nome</label>
                         <input class="form-control" id="nomeAdd" name="nome" type="text" />
                         <label for="categoria">Categoria</label>
-                        <select class="form-select" id="categoria" name="categoria">
+                        <select class="form-select" id="categoria" name="categoria" onchange="porcao(this)">
                             <option value="" selected disabled>Selecione uma opção</option>
                             <option value="1">Bebidas Alcoólicas</option>
                             <option value="2">Porções</option>
                             <option value="3">Bebidas</option>
                             <option value="4">Doces e Sobremesas</option>
                         </select>
-                        <label for="valorAdd">Valor de Venda</label>
+                        <label id="labelValorAdd" for="valorAdd">Valor de Venda</label>
                         <input class="form-control" id="valorAdd" name="valor" type="number" />
-                        <label for="valorAdd">Valor de Compra</label>
+                        <div id="meia" class="d-none">
+                            <label for="qtdeInt">Quantidade em GRAMAS da porção inteira (Uma unidade)</label>
+                            <input class="form-control" id="qtdeInt" name="qtdeInt" type="number" />
+                            <hr>
+                            <label for="valorMeiaAdd">Valor de Venda da Meia Porção</label>
+                            <input class="form-control" id="valorMeiaAdd" name="valorMeia" type="number" />
+                            <label for="qtdeMeia">Quantidade em GRAMAS da meia porção (Uma unidade)</label>
+                            <input class="form-control" id="qtdeMeia" name="qtdeMeia" type="number" />
+                            <hr>
+                        </div>
+                        <label id="valorCompraLabel" for="valorAdd">Valor de Compra</label>
                         <input class="form-control" id="valorCompraAdd" name="valorCompra" type="number" />
-                        <label for="qtde">Quantidade no estoque</label>
+                        <label id="qtdeLabel" for="qtde">Quantidade no estoque</label>
                         <input class="form-control" id="qtde" name="qtde" type="number" />
                     </div>
                 </form>
@@ -116,6 +138,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="modalEdt" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -126,20 +149,31 @@
                     <div class="modal-body">
                         @csrf
                         @method('POST')
-                        <input class="d-none" id="id" name="id" type="text" />
-                        <label for="nome">Nome</label>
+                        <input class="d-none" id="idEdt" name="id" type="text" />
+                        <label id="nomeEdtLabel" for="nomeEdt">Nome</label>
                         <input class="form-control" id="nomeEdt" name="nome" type="text" />
-                        <label for="categoria">Categoria</label>
-                        <select class="form-select" id="categoriaEdt" name="categoria">
+                        <label id="categoriaEdtLabel" for="categoriaEdt">Categoria</label>
+                        <select class="form-select" id="categoriaEdt" name="categoria" onchange="porcaoEdt(this)">
                             <option value="" selected disabled>Selecione uma opção</option>
                             <option value="1">Bebidas Alcoólicas</option>
                             <option value="2">Porções</option>
                             <option value="3">Bebidas</option>
                             <option value="4">Doces e Sobremesas</option>
                         </select>
-                        <label for="valorEdt">Valor de Venda</label>
+
+                        <div id="intEdt" class="d-none">
+                            <label for="qtdeIntEdt">Quantidade em GRAMAS da porção inteira (Uma unidade)</label>
+                            <input class="form-control" id="qtdeIntEdt" name="qtdeInt" type="number" />
+                        </div>
+
+                        <div id="meiaEdt" class="d-none">
+                            <label id="qtdeMeiaEdtLabel" for="qtdeMeiaEdt"></label>
+                            <input class="form-control" id="qtdeMeiaEdt" name="qtdeMeia" type="number" />
+                        </div>
+
+                        <label id="labelValorEdt" for="valorEdt">Valor de Venda</label>
                         <input class="form-control" id="valorEdt" name="valor" type="number" />
-                        <label for="valorCompraEdt">Valor de Compra</label>
+                        <label id="valorCompraLabelEdt" for="valorEdt">Valor de Compra</label>
                         <input class="form-control" id="valorCompraEdt" name="valorCompra" type="number" />
                     </div>
                 </form>
@@ -154,15 +188,87 @@
 
 @section('scriptEnd')
     <script>
-        function editar(id, nome, valor, valorCompra, categoria) {
-            $('#id').val(id)
-            $('#nomeEdt').val(nome)
-            $('#categoriaEdt').val(categoria)
-            $('#valorEdt').val(valor)
-            $('#valorCompraEdt').val(valorCompra)
-            setTimeout(function() {
-                $('#modalEdt').modal('show')
-            }, 150)
+        function porcao(opt) {
+            if (opt.value == 2) {
+                $('#meia').removeClass('d-none')
+                $('#labelValorAdd').text('Valor de Venda da porção Inteira')
+                $('#qtdeLabel').text('Quantidade no estoque em quilos (KG)')
+                $('#valorCompraLabel').text('Valor de Compra por quilo (KG)')
+            } else {
+                $('#meia').addClass('d-none')
+                $('#labelValorAdd').text('Valor de Venda')
+                $('#qtdeLabel').text('Quantidade no estoque')
+                $('#valorCompraLabel').text('Valor de Compra')
+            }
+        }
+
+        function porcaoEdt(opt) {
+            if (opt.value == 2) {
+                $('#meiaEdt').removeClass('d-none')
+                $('#labelValorEdt').text('Valor de Venda da porção Inteira')
+                $('#qtdeLabelEdt').text('Quantidade no estoque em quilos (KG)')
+                $('#valorCompraLabelEdt').text('Valor de Compra por quilo (KG)')
+            } else {
+                $('#meiaEdt').addClass('d-none')
+                $('#labelValorEdt').text('Valor de Venda')
+                $('#qtdeLabelEdt').text('Quantidade no estoque')
+                $('#valorCompraLabelEdt').text('Valor de Compra')
+            }
+        }
+
+        function editar(item) {
+            console.log(item);
+            if (item.categoria == 2) {
+
+                $('#meiaEdt').addClass('d-none')
+                $('#categoriaEdt').removeClass('d-none')
+                $('#categoriaEdtLabel').removeClass('d-none')
+                $('#nomeEdt').removeClass('d-none')
+                $('#nomeEdtLabel').removeClass('d-none')
+                $('#valorCompraLabelEdt').removeClass('d-none')
+                $('#valorCompraEdt').removeClass('d-none')
+
+                $('#intEdt').removeClass('d-none')
+                $('#idEdt').val(item.id)
+                $('#valorEdt').val(item.valor)
+                $('#nomeEdt').val(item.nome.split(' ')[0])
+                $('#categoriaEdt').val(item.categoria)
+                $('#valorCompraEdt').val(item.valorCompra)
+                $('#qtdeIntEdt').val(item.qtde)
+                setTimeout(function() {
+                    $('#modalEdt').modal('show')
+                }, 150)
+            } else if (item.categoria == 5) {
+
+                $('#intEdt').addClass('d-none')
+
+                $('#meiaEdt').removeClass('d-none')
+                $('#categoriaEdt').addClass('d-none')
+                $('#categoriaEdtLabel').addClass('d-none')
+                $('#nomeEdt').addClass('d-none')
+                $('#nomeEdtLabel').addClass('d-none')
+                $('#valorCompraLabelEdt').addClass('d-none')
+                $('#valorCompraEdt').addClass('d-none')
+                $('#qtdeMeiaEdtLabel').text('Quantidade em GRAMAS de MEIA porção de ' + item.nome.split(' ')[0] +
+                    ' (Uma unidade)')
+                $('#idEdt').val(item.id)
+                $('#valorEdt').val(item.valor)
+                $('#nomeEdt').val(item.nome)
+                $('#valorCompraEdt').val(item.valorCompra)
+                $('#qtdeMeiaEdt').val(item.qtde)
+                setTimeout(function() {
+                    $('#modalEdt').modal('show')
+                }, 150)
+            } else {
+                $('#idEdt').val(item.id)
+                $('#nomeEdt').val(item.nome.split(' ')[0])
+                $('#categoriaEdt').val(item.categoria)
+                $('#valorEdt').val(item.valor)
+                $('#valorCompraEdt').val(item.valorCompra)
+                setTimeout(function() {
+                    $('#modalEdt').modal('show')
+                }, 150)
+            }
         }
 
         function addProduto(e) {

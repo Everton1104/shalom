@@ -275,7 +275,7 @@ class SistemaController extends Controller
 
     public function addCard(Request $request)
     {
-        if (Auth::user()->id == 1 || Auth::user()->id == 2) {
+        if (Auth::user()->id == 1 || Auth::user()->id == 2 || Auth::user()->id == 7) {
             if (!empty($request->code)) {
                 try {
                     $cartao = CartaoModel::create(['code' => $request->code]);
@@ -303,7 +303,7 @@ class SistemaController extends Controller
             '=',
             'itens.id'
         )
-            ->select('itens.*', 'estoque.valor as valorCompra', 'estoque.qtde')->get();
+            ->select('itens.*', 'estoque.valor as valorCompra', 'estoque.qtde as qtdeEstoque')->orderBy('id')->get();
         $permitido = $this->permissao(Auth::user()->id);
         return view('sistema.produtos', compact('permitido', 'itens'));
     }
@@ -311,6 +311,39 @@ class SistemaController extends Controller
     public function novoProduto(Request $request)
     {
         if (!empty($request->nome) && !empty($request->valor) && !empty($request->valorCompra) && !empty($request->categoria) && !empty($request->qtde)) {
+            if ($request->categoria == 2 && !empty($request->valorMeia) && !empty($request->qtdeMeia) && !empty($request->qtdeInt)) {
+                $item = ItemModel::create([
+                    'nome' => $request->nome . " - INTEIRA",
+                    'valor' => $request->valor,
+                    'qtde' => $request->qtdeInt,
+                    'categoria' => $request->categoria,
+                ]);
+                $itemMeia = ItemModel::create([
+                    'nome' => $request->nome . " - MEIA",
+                    'valor' => $request->valorMeia,
+                    'qtde' => $request->qtdeMeia,
+                    'categoria' => 5,
+                ]);
+                $estoque = EstoqueModel::create([
+                    'item_id' => $item->id,
+                    'valor' => $request->valorCompra,
+                    'qtde' => $request->qtde,
+                    'user' => Auth::user()->name,
+                    'obs' => Auth::user()->name . " criou " . $request->nome . " com " . $request->qtde . " unidades ou kg em " . date('d/m/Y') . ' as ' . date('H:i:s') . ' valor un. R$' . number_format($request->valorCompra, 2, ',', '.'),
+                ]);
+                $item->update([
+                    'estoque_id' => $estoque->id
+                ]);
+                $itemMeia->update([
+                    'estoque_id' => $estoque->id
+                ]);
+                HistoricoModel::create([
+                    'user_id' => Auth::user()->id,
+                    'operacao' => 6,
+                    'obs' => Auth::user()->name . ' cadastrou um novo produto: ' . $request->qtde . ' X ' . $request->nome . ' no valor de venda de R$ ' . number_format($request->valor, 2, ',', '.') . ' e compra R$ ' . number_format($request->valorCompra, 2, ',', '.') . ' a unidade.'
+                ]);
+                return redirect()->back()->with('msg', 'Adicionado');
+            }
             $item = ItemModel::create([
                 'nome' => $request->nome,
                 'valor' => $request->valor,
@@ -341,6 +374,10 @@ class SistemaController extends Controller
     {
         try {
             $item = ItemModel::where('id', $id)->first();
+            if ($item->categoria == 2) {
+                $itemMeia = ItemModel::where('id', $id + 1)->first();
+                $itemMeia->delete();
+            }
             ComandaModel::where('item_id', $id)->update([
                 'obs' => 'O produto ' . $item->nome . ' foi deletado por ' . Auth::user()->name . ' em ' . date('d/m/Y') . ' as ' . date('H:i:s') . ' valor un. R$' . number_format($item->valor, 2, ',', '.')
             ]);
@@ -357,19 +394,33 @@ class SistemaController extends Controller
         }
     }
 
-    public function editarProduto(Request $request)
+    public function editarProduto(Request $request) // deletar item de meia porcao quando trocar a categoria e tambem quando deletar normal
     {
-        if (!empty($request->nome) && !empty($request->valor) && !empty($request->id) && !empty($request->valorCompra) && !empty($request->categoria)) {
+        if (!empty($request->nome) && !empty($request->valor) && !empty($request->id)) {
             $item = ItemModel::where('id', $request->id)->first();
+            $estoque = EstoqueModel::where('id', $item->estoque_id)->first();
             ItemModel::where('id', $request->id)->update([
                 'nome' => $request->nome,
                 'valor' => $request->valor,
-                'categoria' => $request->categoria,
+                'qtde' => $request->qtde,
+                'categoria' => $request->categoria ?? $item->categoria,
             ]);
-            $estoque = EstoqueModel::where('item_id', $request->id)->first();
-            EstoqueModel::where('item_id', $request->id)->update([
-                'valor' => $request->valorCompra,
-            ]);
+            if ($request->categoria == 2) {
+                $item->update([
+                    'nome' => $request->nome . " - INTEIRA",
+                    'qtde' => $request->qtdeInt,
+                ]);
+            }
+            if ($item->categoria == 5) {
+                $item->update([
+                    'qtde' => $request->qtdeMeia,
+                ]);
+            }
+            if ($request->categoria != 5) {
+                EstoqueModel::where('item_id', $request->id)->update([
+                    'valor' => $request->valorCompra,
+                ]);
+            }
             HistoricoModel::create([
                 'user_id' => Auth::user()->id,
                 'operacao' => 8,
