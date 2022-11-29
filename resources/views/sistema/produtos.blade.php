@@ -36,7 +36,7 @@
                                 <td>
                                     @if ($item->categoria == 5)
                                         <a href="#" class="mx-1"
-                                            onclick="editar(JSON.parse('{{ json_encode($item) }}'))"><i
+                                            onclick="editarMeia(JSON.parse('{{ json_encode($item) }}'))"><i
                                                 class="fa-solid fa-pen-to-square"></i></a>
                                     @else
                                         <a href="#" class="mx-1"
@@ -156,7 +156,7 @@
                         <select class="form-select" id="categoriaEdt" name="categoria" onchange="porcaoEdt(this)">
                             <option value="" selected disabled>Selecione uma opção</option>
                             <option value="1">Bebidas Alcoólicas</option>
-                            <option value="2">Porções</option>
+                            <option value="2" disabled>Porções</option>
                             <option value="3">Bebidas</option>
                             <option value="4">Doces e Sobremesas</option>
                         </select>
@@ -164,11 +164,6 @@
                         <div id="intEdt" class="d-none">
                             <label for="qtdeIntEdt">Quantidade em GRAMAS da porção inteira (Uma unidade)</label>
                             <input class="form-control" id="qtdeIntEdt" name="qtdeInt" type="number" />
-                        </div>
-
-                        <div id="meiaEdt" class="d-none">
-                            <label id="qtdeMeiaEdtLabel" for="qtdeMeiaEdt"></label>
-                            <input class="form-control" id="qtdeMeiaEdt" name="qtdeMeia" type="number" />
                         </div>
 
                         <label id="labelValorEdt" for="valorEdt">Valor de Venda</label>
@@ -179,6 +174,31 @@
                 </form>
                 <div class="modal-footer">
                     <button class="btn btn-success" onclick="edtProduto(event)">Enviar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalMeia" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="formMeia" method="post" action="{{ route('sistema.editarProduto') }}">
+                    <div class="modal-header">
+                        <h3>Editar Meia Porção</h3>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        @method('POST')
+                        <input class="d-none" id="idMeiaEdt" name="id" type="text" />
+                        <label for="qtdeMeiaEdt">Quantidade em GRAMAS de meia porção (Uma unidade)</label>
+                        <input class="form-control" id="qtdeMeiaEdt" name="qtdeMeia" type="number" />
+                        <label id="labelValorMeiaEdt" for="valorMeiaEdt">Valor de Venda</label>
+                        <input class="form-control" id="valorMeiaEdt" name="valor" type="number" />
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button class="btn btn-success" onclick="$('#formMeia').submit()">Enviar</button>
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -204,12 +224,14 @@
 
         function porcaoEdt(opt) {
             if (opt.value == 2) {
-                $('#meiaEdt').removeClass('d-none')
+                $('#intEdt').removeClass('d-none')
                 $('#labelValorEdt').text('Valor de Venda da porção Inteira')
                 $('#qtdeLabelEdt').text('Quantidade no estoque em quilos (KG)')
                 $('#valorCompraLabelEdt').text('Valor de Compra por quilo (KG)')
+                $('#categoriaEdt').addClass('d-none')
+                $('#categoriaEdtLabel').addClass('d-none')
             } else {
-                $('#meiaEdt').addClass('d-none')
+                $('#intEdt').addClass('d-none')
                 $('#labelValorEdt').text('Valor de Venda')
                 $('#qtdeLabelEdt').text('Quantidade no estoque')
                 $('#valorCompraLabelEdt').text('Valor de Compra')
@@ -217,18 +239,18 @@
         }
 
         function editar(item) {
-            console.log(item);
             if (item.categoria == 2) {
-
-                $('#meiaEdt').addClass('d-none')
-                $('#categoriaEdt').removeClass('d-none')
-                $('#categoriaEdtLabel').removeClass('d-none')
-                $('#nomeEdt').removeClass('d-none')
-                $('#nomeEdtLabel').removeClass('d-none')
-                $('#valorCompraLabelEdt').removeClass('d-none')
-                $('#valorCompraEdt').removeClass('d-none')
-
+                opt = {
+                    'value': 2
+                }
+                porcaoEdt(opt)
                 $('#intEdt').removeClass('d-none')
+                $('#labelValorEdt').text('Valor de Venda da porção Inteira')
+                $('#qtdeLabelEdt').text('Quantidade no estoque em quilos (KG)')
+                $('#valorCompraLabelEdt').text('Valor de Compra por quilo (KG)')
+                $('#categoriaEdt').addClass('d-none')
+                $('#categoriaEdtLabel').addClass('d-none')
+
                 $('#idEdt').val(item.id)
                 $('#valorEdt').val(item.valor)
                 $('#nomeEdt').val(item.nome.split(' ')[0])
@@ -238,28 +260,12 @@
                 setTimeout(function() {
                     $('#modalEdt').modal('show')
                 }, 150)
-            } else if (item.categoria == 5) {
-
-                $('#intEdt').addClass('d-none')
-
-                $('#meiaEdt').removeClass('d-none')
-                $('#categoriaEdt').addClass('d-none')
-                $('#categoriaEdtLabel').addClass('d-none')
-                $('#nomeEdt').addClass('d-none')
-                $('#nomeEdtLabel').addClass('d-none')
-                $('#valorCompraLabelEdt').addClass('d-none')
-                $('#valorCompraEdt').addClass('d-none')
-                $('#qtdeMeiaEdtLabel').text('Quantidade em GRAMAS de MEIA porção de ' + item.nome.split(' ')[0] +
-                    ' (Uma unidade)')
-                $('#idEdt').val(item.id)
-                $('#valorEdt').val(item.valor)
-                $('#nomeEdt').val(item.nome)
-                $('#valorCompraEdt').val(item.valorCompra)
-                $('#qtdeMeiaEdt').val(item.qtde)
-                setTimeout(function() {
-                    $('#modalEdt').modal('show')
-                }, 150)
             } else {
+                $('#intEdt').addClass('d-none')
+                $('#labelValorEdt').text('Valor de Venda')
+                $('#qtdeLabelEdt').text('Quantidade no estoque')
+                $('#valorCompraLabelEdt').text('Valor de Compra')
+
                 $('#idEdt').val(item.id)
                 $('#nomeEdt').val(item.nome.split(' ')[0])
                 $('#categoriaEdt').val(item.categoria)
@@ -269,6 +275,16 @@
                     $('#modalEdt').modal('show')
                 }, 150)
             }
+        }
+
+        function editarMeia(item) {
+            console.log(item);
+            $('#idMeiaEdt').val(item.id)
+            $('#valorMeiaEdt').val(item.valor)
+            $('#qtdeMeiaEdt').val(item.qtde)
+            setTimeout(function() {
+                $('#modalMeia').modal('show')
+            }, 150)
         }
 
         function addProduto(e) {

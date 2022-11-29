@@ -394,7 +394,7 @@ class SistemaController extends Controller
         }
     }
 
-    public function editarProduto(Request $request) // deletar item de meia porcao quando trocar a categoria e tambem quando deletar normal
+    public function editarProduto(Request $request) // não permitir troca de categoria para procoes
     {
         if (!empty($request->nome) && !empty($request->valor) && !empty($request->id)) {
             $item = ItemModel::where('id', $request->id)->first();
