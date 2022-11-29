@@ -376,13 +376,18 @@ class SistemaController extends Controller
             $item = ItemModel::where('id', $id)->first();
             if ($item->categoria == 2) {
                 $itemMeia = ItemModel::where('id', $id + 1)->first();
+                // ATUALIZA TODAS AS COMANDAS QUE TINHAM ESSE ITEM
+                ComandaModel::where('item_id', $id + 1)->update([
+                    'obs' => 'O produto ' . $itemMeia->nome . ' foi deletado por ' . Auth::user()->name . ' em ' . date('d/m/Y') . ' as ' . date('H:i:s') . ' valor un. R$' . number_format($itemMeia->valor, 2, ',', '.')
+                ]);
                 $itemMeia->delete();
             }
+            ItemModel::where('id', $id)->delete();
+            EstoqueModel::where('item_id', $id)->delete();
+            // ATUALIZA TODAS AS COMANDAS QUE TINHAM ESSE ITEM
             ComandaModel::where('item_id', $id)->update([
                 'obs' => 'O produto ' . $item->nome . ' foi deletado por ' . Auth::user()->name . ' em ' . date('d/m/Y') . ' as ' . date('H:i:s') . ' valor un. R$' . number_format($item->valor, 2, ',', '.')
             ]);
-            ItemModel::where('id', $id)->delete();
-            EstoqueModel::where('item_id', $id)->delete();
             HistoricoModel::create([
                 'user_id' => Auth::user()->id,
                 'operacao' => 7,
@@ -394,11 +399,11 @@ class SistemaController extends Controller
         }
     }
 
-    public function editarProduto(Request $request) // não permitir troca de categoria para procoes
+    public function editarProduto(Request $request) // deletar item de meia porcao quando trocar a categoria
     {
         if (!empty($request->nome) && !empty($request->valor) && !empty($request->id)) {
             $item = ItemModel::where('id', $request->id)->first();
-            $estoque = EstoqueModel::where('id', $item->estoque_id)->first();
+            $estoque = EstoqueModel::where('id', $item->estoque_id)->first() ?? ['valor' => null]; //here 28/11/2022 - 21:24
             ItemModel::where('id', $request->id)->update([
                 'nome' => $request->nome,
                 'valor' => $request->valor,
