@@ -179,7 +179,7 @@ class SistemaController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request) // parou aki 01/12/2022 - 12h56 -> remover do estoque por gramas (depois conferir cardápio)
     {
         if (isset($request->id) && isset($request->card_id) && isset($request->qtde)) {
             $item = ItemModel::where('id', $request->id)->first();
@@ -399,7 +399,7 @@ class SistemaController extends Controller
         }
     }
 
-    public function editarProduto(Request $request) // deletar item de meia porcao quando trocar a categoria
+    public function editarProduto(Request $request)
     {
         if (!empty($request->nome) && !empty($request->valor) && !empty($request->id)) {
             $item = ItemModel::where('id', $request->id)->first();
