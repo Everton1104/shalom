@@ -179,7 +179,7 @@ class SistemaController extends Controller
         }
     }
 
-    public function store(Request $request) // parou aki 01/12/2022 - 12h56 -> remover do estoque por gramas (depois conferir cardápio)
+    public function store(Request $request)
     {
         if (isset($request->id) && isset($request->card_id) && isset($request->qtde)) {
             $item = ItemModel::where('id', $request->id)->first();
