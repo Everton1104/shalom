@@ -8,73 +8,106 @@
         <div class="card p-5 rounded-5" style="background-color:rgb(116, 25, 25); color:white">
             @if (!empty($porcoes[0]->nome))
                 <h1 class="text-center mb-5" style="font-family:menu_itens">PORÇÕES</h1>
-                <div class="row">
-                    <div class="col-md-6 col-4"></div>
-                    <div class="col-md-3 col-4">MEIA</div>
-                    <div class="col-md-3 col-4">INTEIRA</div>
-                    @foreach ($porcoes as $item)
-                        <div class="col-md-6 col-4">
-                            {{ mb_strtoupper(explode(' -', $item->nome)[0]) }}
-                        </div>
-                        <div class="col-md-3 col-4">
-                            R$
-                            @php
-                                foreach ($meia as $itemMeia) {
-                                    if ($itemMeia->id == $item->id + 1) {
-                                        echo number_format($itemMeia->valor, 2, ',', '.');
-                                    }
-                                }
-                            @endphp
-                        </div>
-                        <div class="col-md-3 col-4">
-                            R$ {{ number_format($item->valor, 2, ',', '.') }}
-                        </div>
-                    @endforeach
+                <table class="table table-responsive" style="color:white">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">MEIA</th>
+                            <th scope="col">INTEIRA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($porcoes as $item)
+                            <tr>
+                                <td>
+                                    {{ mb_strtoupper(explode(' -', $item->nome)[0]) }}
+                                </td>
+                                <td>
+                                    R$
+                                    @php
+                                        foreach ($meia as $itemMeia) {
+                                            if ($itemMeia->id == $item->id + 1) {
+                                                echo number_format($itemMeia->valor, 2, ',', '.');
+                                            }
+                                        }
+                                    @endphp
+                                </td>
+                                <td>
+                                    R$ {{ number_format($item->valor, 2, ',', '.') }}
+                                <td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             @endif
             @if (!empty($alcoolicas[0]->nome))
                 <h1 class="text-center my-5" style="font-family:menu_itens">BABIDAS ALCOÓLICAS</h1>
-                <div class="row">
-                    <div class="col-md-6 col-8"></div>
-                    <div class="col-md-3 col-4">VALOR</div>
-                    @foreach ($alcoolicas as $item)
-                        <div class="col-md-6 col-4">
-                            {{ mb_strtoupper($item->nome) }}
-                        </div>
-                        <div class="col-md-3 col-4">
-                            R$ {{ number_format($item->valor, 2, ',', '.') }}
-                        </div>
-                    @endforeach
-                </div>
+                <table class="table table-responsive" style="color:white">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">VALOR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($alcoolicas as $item)
+                            <tr>
+                                <td>
+                                    {{ mb_strtoupper($item->nome) }}
+                                </td>
+                                <td>
+                                    R$ {{ number_format($item->valor, 2, ',', '.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             @endif
             @if (!empty($bebidas[0]->nome))
                 <h1 class="text-center my-5" style="font-family:menu_itens">BABIDAS E SUCOS</h1>
-                <div class="row">
-                    <div class="col-md-6 col-8"></div>
-                    <div class="col-md-3 col-4">VALOR</div>
-                    @foreach ($bebidas as $item)
-                        <div class="col-md-6 col-4">
-                            {{ mb_strtoupper($item->nome) }}
-                        </div>
-                        <div class="col-md-3 col-4">
-                            R$ {{ number_format($item->valor, 2, ',', '.') }}
-                        </div>
-                    @endforeach
-                </div>
+                <table class="table table-responsive" style="color:white">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">VALOR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($bebidas as $item)
+                            <tr>
+                                <td>
+                                    {{ mb_strtoupper($item->nome) }}
+                                </td>
+                                <td>
+                                    R$ {{ number_format($item->valor, 2, ',', '.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             @endif
             @if (!empty($doces[0]->nome))
                 <h1 class="text-center my-5" style="font-family:menu_itens">DOCES E SOBREMESAS</h1>
-                <div class="row">
-                    <div class="col-md-6 col-8"></div>
-                    <div class="col-md-3 col-4">VALOR</div>
-                    @foreach ($doces as $item)
-                        <div class="col-md-6 col-4">
-                            {{ mb_strtoupper($item->nome) }}
-                        </div>
-                        <div class="col-md-3 col-4">
-                            R$ {{ number_format($item->valor, 2, ',', '.') }}
-                        </div>
-                    @endforeach
-                </div>
+                <table class="table table-responsive" style="color:white">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">VALOR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($doces as $item)
+                            <tr>
+                                <td>
+                                    {{ mb_strtoupper($item->nome) }}
+                                </td>
+                                <td>
+                                    R$ {{ number_format($item->valor, 2, ',', '.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             @endif
         </div>
     </div>
