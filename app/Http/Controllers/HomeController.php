@@ -57,7 +57,16 @@ class HomeController extends Controller
             )
             ->select('itens.*', 'estoque.qtde')->get();
 
+        $meia = ItemModel::where('categoria', 5)
+            ->leftJoin(
+                'estoque',
+                'estoque.item_id',
+                '=',
+                'itens.estoque_id'
+            )
+            ->select('itens.*', 'estoque.qtde')->get();
+
         $permitido = $this->permissao(Auth::user()->id ?? false);
-        return view('welcome', compact('permitido', 'alcoolicas', 'porcoes', 'bebidas', 'doces'));
+        return view('welcome', compact('permitido', 'alcoolicas', 'porcoes', 'bebidas', 'doces', 'meia'));
     }
 }
