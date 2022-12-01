@@ -191,10 +191,16 @@ class SistemaController extends Controller
                     'registro' => "Registrado por " . Auth::user()->name . " no valor de R$ " . number_format($item->valor, 2, ',', '.')
                 ]
             );
-            $estoque = EstoqueModel::where('item_id', $request->id)->first();
-            EstoqueModel::where('item_id', $request->id)->update([
-                'qtde' => $estoque->qtde - $request->qtde,
-            ]);
+            $estoque = EstoqueModel::where('item_id', $item->estoque_id)->first();
+            if ($item->categoria == 2 || $item->categoria == 5) {
+                $estoque->update([
+                    'qtde' => $estoque->qtde - ($item->qtde / 1000),
+                ]);
+            } else {
+                $estoque->update([
+                    'qtde' => $estoque->qtde - $request->qtde,
+                ]);
+            }
             $cartao = CartaoModel::where('id', $comanda->card_id)->first();
             HistoricoModel::create([
                 'user_id' => Auth::user()->id,
@@ -211,21 +217,22 @@ class SistemaController extends Controller
         }
     }
 
-    public function show($id)
-    {
-        return 'show';
-    }
-
     public function deletar($card, $id = null)
     {
         if (isset(ComandaModel::where('id', $id)->first()->id)) {
             $comanda = ComandaModel::where('id', $id)->first();
             $cartao = CartaoModel::where('id', $comanda->card_id)->first();
-            $estoque = EstoqueModel::where('item_id', $comanda->item_id)->first();
             $item = ItemModel::where('id', $comanda->item_id)->first();
-            EstoqueModel::where('item_id', $comanda->item_id)->update([
-                'qtde' => $estoque->qtde + $comanda->qtde
-            ]);
+            $estoque = EstoqueModel::where('item_id', $item->estoque_id)->first();
+            if ($item->categoria == 2 || $item->categoria == 5) {
+                $estoque->update([
+                    'qtde' => $estoque->qtde + ($item->qtde / 1000)
+                ]);
+            } else {
+                $estoque->update([
+                    'qtde' => $estoque->qtde + $comanda->qtde
+                ]);
+            }
             HistoricoModel::create([
                 'user_id' => Auth::user()->id,
                 'operacao' => 3,

@@ -14,7 +14,7 @@
                     <div class="col-md-3 col-4">INTEIRA</div>
                     @foreach ($porcoes as $item)
                         <div class="col-md-6 col-4">
-                            {{ explode(' -', $item->nome)[0] }}
+                            {{ mb_strtoupper(explode(' -', $item->nome)[0]) }}
                         </div>
                         <div class="col-md-3 col-4">
                             R$
@@ -38,7 +38,7 @@
                     <div class="col-md-3 col-4">VALOR</div>
                     @foreach ($alcoolicas as $item)
                         <div class="col-md-6 col-4">
-                            {{ $item->nome }}
+                            {{ mb_strtoupper($item->nome) }}
                         </div>
                         <div class="col-md-3 col-4">
                             R$ {{ number_format($item->valor, 2, ',', '.') }}
@@ -53,7 +53,7 @@
                     <div class="col-md-3 col-4">VALOR</div>
                     @foreach ($bebidas as $item)
                         <div class="col-md-6 col-4">
-                            {{ $item->nome }}
+                            {{ mb_strtoupper($item->nome) }}
                         </div>
                         <div class="col-md-3 col-4">
                             R$ {{ number_format($item->valor, 2, ',', '.') }}
@@ -68,7 +68,7 @@
                     <div class="col-md-3 col-4">VALOR</div>
                     @foreach ($doces as $item)
                         <div class="col-md-6 col-4">
-                            {{ $item->nome }}
+                            {{ mb_strtoupper($item->nome) }}
                         </div>
                         <div class="col-md-3 col-4">
                             R$ {{ number_format($item->valor, 2, ',', '.') }}
