@@ -34,14 +34,10 @@
                         @foreach ($itens as $item)
                             <tr>
                                 <td>
-                                    @if ($item->categoria == 5)
-                                        <a href="#" class="mx-1"
-                                            onclick="editar(JSON.parse('{{ json_encode($item) }}'))"><i
-                                                class="fa-solid fa-pen-to-square"></i></a>
-                                    @else
-                                        <a href="#" class="mx-1"
-                                            onclick="editar(JSON.parse('{{ json_encode($item) }}'))"><i
-                                                class="fa-solid fa-pen-to-square"></i></a>
+                                    <a href="#" class="mx-1"
+                                        onclick="editar(JSON.parse('{{ json_encode($item) }}'))"><i
+                                            class="fa-solid fa-pen-to-square"></i></a>
+                                    @if ($item->categoria != 5)
                                         <a href="#" class="mx-1"
                                             onclick="if(confirm('Deletar {!! $item->nome !!}?')){window.location.href='{!! route('sistema.deleteProduto', $item->id) !!}'}"
                                             style="color:red">
@@ -162,6 +158,7 @@
                             <option value="2">Porções</option>
                             <option value="3">Bebidas</option>
                             <option value="4">Doces e Sobremesas</option>
+                            <option value="5" hidden>meia</option>
                         </select>
 
                         <div id="intEdt" class="d-none">
@@ -170,7 +167,8 @@
                         </div>
 
                         <div id="meiaEdt" class="d-none">
-                            <label id="qtdeMeiaEdtLabel" for="qtdeMeiaEdt"></label>
+                            <label id="qtdeMeiaEdtLabel" for="qtdeMeiaEdt">Quantidade em GRAMAS de meia porção (Uma
+                                unidade)</label>
                             <input class="form-control" id="qtdeMeiaEdt" name="qtdeMeia" type="number" />
                         </div>
 
@@ -205,7 +203,7 @@
             }
         }
 
-        function porcaoEdt(opt) {
+        function porcaoEdt(opt) { // OCULTAR OU MOSTRAR CAMPOS CONFORME CATEGORIA
             if (opt.value == 2) {
                 $('#meiaEdt').removeClass('d-none')
                 $('#labelValorEdt').text('Valor de Venda da porção Inteira')
@@ -258,6 +256,7 @@
                 $('#valorEdt').val(item.valor)
                 $('#nomeEdt').val(item.nome)
                 $('#valorCompraEdt').val(item.valorCompra)
+                $('#categoriaEdt').val(item.categoria)
                 $('#qtdeMeiaEdt').val(item.qtde)
                 setTimeout(function() {
                     $('#modalEdt').modal('show')

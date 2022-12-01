@@ -403,20 +403,23 @@ class SistemaController extends Controller
     {
         if (!empty($request->nome) && !empty($request->valor) && !empty($request->id)) {
             $item = ItemModel::where('id', $request->id)->first();
-            $estoque = EstoqueModel::where('id', $item->estoque_id)->first() ?? ['valor' => null]; //here 28/11/2022 - 21:24
-            ItemModel::where('id', $request->id)->update([
+            if ($item->categoria == 2 && $item->categoria != $request->categoria) {
+                return redirect()->back()->with('erroMsg', "Não é possivel trocar esta categoria.");
+            }
+            $estoque = EstoqueModel::where('id', $item->estoque_id)->first() ?? ['valor' => null];
+            $item->update([
                 'nome' => $request->nome,
                 'valor' => $request->valor,
-                'qtde' => $request->qtde,
-                'categoria' => $request->categoria ?? $item->categoria,
             ]);
             if ($request->categoria == 2) {
                 $item->update([
                     'nome' => $request->nome . " - INTEIRA",
                     'qtde' => $request->qtdeInt,
                 ]);
-            }
-            if ($item->categoria == 5) {
+                ItemModel::where('id', $request->id + 1)->first()->update([
+                    'nome' => $request->nome . " - MEIA",
+                ]);
+            } else if ($item->categoria == 5) {
                 $item->update([
                     'qtde' => $request->qtdeMeia,
                 ]);
