@@ -68,6 +68,9 @@
                                             case '4':
                                                 echo 'Doces e Sobremesas';
                                                 break;
+                                            case '5':
+                                                echo 'Porções';
+                                                break;
                                         }
                                     @endphp
                                 </td>
@@ -231,7 +234,7 @@
                 $('#intEdt').removeClass('d-none')
                 $('#idEdt').val(item.id)
                 $('#valorEdt').val(item.valor)
-                $('#nomeEdt').val(item.nome.split(' ')[0])
+                $('#nomeEdt').val(item.nome.split(' -')[0])
                 $('#categoriaEdt').val(item.categoria)
                 $('#valorCompraEdt').val(item.valorCompra)
                 $('#qtdeIntEdt').val(item.qtde)
@@ -249,7 +252,7 @@
                 $('#nomeEdtLabel').addClass('d-none')
                 $('#valorCompraLabelEdt').addClass('d-none')
                 $('#valorCompraEdt').addClass('d-none')
-                $('#qtdeMeiaEdtLabel').text('Quantidade em GRAMAS de MEIA porção de ' + item.nome.split(' ')[0] +
+                $('#qtdeMeiaEdtLabel').text('Quantidade em GRAMAS de MEIA porção de ' + item.nome.split(' -')[0] +
                     ' (Uma unidade)')
                 $('#idEdt').val(item.id)
                 $('#valorEdt').val(item.valor)
@@ -261,7 +264,7 @@
                 }, 150)
             } else {
                 $('#idEdt').val(item.id)
-                $('#nomeEdt').val(item.nome.split(' ')[0])
+                $('#nomeEdt').val(item.nome.split(' -')[0])
                 $('#categoriaEdt').val(item.categoria)
                 $('#valorEdt').val(item.valor)
                 $('#valorCompraEdt').val(item.valorCompra)
