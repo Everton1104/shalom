@@ -14,6 +14,7 @@
                             <th scope="col"></th>
                             <th scope="col">MEIA</th>
                             <th scope="col">INTEIRA</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
