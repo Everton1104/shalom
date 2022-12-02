@@ -26,7 +26,7 @@ class HomeController extends Controller
                 'estoque',
                 'estoque.item_id',
                 '=',
-                'itens.estoque_id'
+                'itens.id'
             )
             ->select('itens.*', 'estoque.qtde as estoque')->get();
 
@@ -35,7 +35,7 @@ class HomeController extends Controller
                 'estoque',
                 'estoque.item_id',
                 '=',
-                'itens.estoque_id'
+                'itens.id'
             )
             ->select('itens.*', 'estoque.qtde as estoque')->get();
 
@@ -44,7 +44,7 @@ class HomeController extends Controller
                 'estoque',
                 'estoque.item_id',
                 '=',
-                'itens.estoque_id'
+                'itens.id'
             )
             ->select('itens.*', 'estoque.qtde as estoque')->get();
 
@@ -53,7 +53,7 @@ class HomeController extends Controller
                 'estoque',
                 'estoque.item_id',
                 '=',
-                'itens.estoque_id'
+                'itens.id'
             )
             ->select('itens.*', 'estoque.qtde as estoque')->get();
 
@@ -62,7 +62,7 @@ class HomeController extends Controller
                 'estoque',
                 'estoque.item_id',
                 '=',
-                'itens.estoque_id'
+                'itens.id'
             )
             ->select('itens.*', 'estoque.qtde as estoque')->get();
 

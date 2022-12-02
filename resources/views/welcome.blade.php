@@ -61,6 +61,9 @@
                                 <tr>
                                     <td>
                                         {{ mb_strtoupper($item->nome) }}
+                                        @if ($item->estoque <= 0)
+                                            - ESGOTADO
+                                        @endif
                                     </td>
                                     <td class="nowrap">
                                         R$ {{ number_format($item->valor, 2, ',', '.') }}
@@ -86,6 +89,9 @@
                                 <tr>
                                     <td>
                                         {{ mb_strtoupper($item->nome) }}
+                                        @if ($item->estoque <= 0)
+                                            - ESGOTADO
+                                        @endif
                                     </td>
                                     <td class="nowrap">
                                         R$ {{ number_format($item->valor, 2, ',', '.') }}
@@ -111,6 +117,9 @@
                                 <tr>
                                     <td>
                                         {{ mb_strtoupper($item->nome) }}
+                                        @if ($item->estoque <= 0)
+                                            - ESGOTADO
+                                        @endif
                                     </td>
                                     <td class="nowrap">
                                         R$ {{ number_format($item->valor, 2, ',', '.') }}
