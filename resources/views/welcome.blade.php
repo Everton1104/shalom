@@ -24,7 +24,7 @@
                                     <td>
                                         {{ mb_strtoupper(explode(' -', $item->nome)[0]) }}
                                         @if ($item->estoque <= 0)
-                                            - ESGOTADO
+                                            - <span class="border rounded p-1">ESGOTADO</span>
                                         @endif
                                     </td>
                                     <td class="nowrap">
@@ -62,7 +62,7 @@
                                     <td>
                                         {{ mb_strtoupper($item->nome) }}
                                         @if ($item->estoque <= 0)
-                                            - ESGOTADO
+                                            - <span class="border rounded p-1">ESGOTADO</span>
                                         @endif
                                     </td>
                                     <td class="nowrap">
@@ -90,7 +90,7 @@
                                     <td>
                                         {{ mb_strtoupper($item->nome) }}
                                         @if ($item->estoque <= 0)
-                                            - ESGOTADO
+                                            - <span class="border rounded p-1">ESGOTADO</span>
                                         @endif
                                     </td>
                                     <td class="nowrap">
@@ -118,7 +118,7 @@
                                     <td>
                                         {{ mb_strtoupper($item->nome) }}
                                         @if ($item->estoque <= 0)
-                                            - ESGOTADO
+                                            - <span class="border rounded p-1">ESGOTADO</span>
                                         @endif
                                     </td>
                                     <td class="nowrap">
