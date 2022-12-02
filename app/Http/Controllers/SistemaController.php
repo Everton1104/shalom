@@ -185,7 +185,7 @@ class SistemaController extends Controller
             $item = ItemModel::where('id', $request->id)->first();
             $comanda = ComandaModel::create(
                 [
-                    'item_id' => $request->id,
+                    'item_id' => $item->id,
                     'card_id' => $request->card_id,
                     'qtde' => $request->qtde,
                     'registro' => "Registrado por " . Auth::user()->name . " no valor de R$ " . number_format($item->valor, 2, ',', '.')
@@ -363,7 +363,7 @@ class SistemaController extends Controller
                 'user' => Auth::user()->name,
                 'obs' => Auth::user()->name . " criou " . $request->nome . " com " . $request->qtde . " unidades em " . date('d/m/Y') . ' as ' . date('H:i:s') . ' valor un. R$' . number_format($request->valorCompra, 2, ',', '.'),
             ]);
-            ItemModel::where('id', $item->id)->update([
+            $item->update([
                 'estoque_id' => $estoque->id
             ]);
             HistoricoModel::create([
