@@ -28,7 +28,7 @@ class HomeController extends Controller
                 '=',
                 'itens.id'
             )
-            ->select('itens.*', 'estoque.qtde as estoque')->get();
+            ->select('itens.*', 'estoque.qtde as estoque')->orderBy('valor', 'ASC')->get();
 
         $porcoes = ItemModel::where('categoria', 2)
             ->leftJoin(
@@ -37,7 +37,7 @@ class HomeController extends Controller
                 '=',
                 'itens.id'
             )
-            ->select('itens.*', 'estoque.qtde as estoque')->get();
+            ->select('itens.*', 'estoque.qtde as estoque')->orderBy('valor', 'ASC')->get();
 
         $bebidas = ItemModel::where('categoria', 3)
             ->leftJoin(
@@ -46,7 +46,7 @@ class HomeController extends Controller
                 '=',
                 'itens.id'
             )
-            ->select('itens.*', 'estoque.qtde as estoque')->get();
+            ->select('itens.*', 'estoque.qtde as estoque')->orderBy('valor', 'ASC')->get();
 
         $doces = ItemModel::where('categoria', 4)
             ->leftJoin(
@@ -55,7 +55,7 @@ class HomeController extends Controller
                 '=',
                 'itens.id'
             )
-            ->select('itens.*', 'estoque.qtde as estoque')->get();
+            ->select('itens.*', 'estoque.qtde as estoque')->orderBy('valor', 'ASC')->get();
 
         $meia = ItemModel::where('categoria', 5)
             ->leftJoin(
@@ -64,7 +64,7 @@ class HomeController extends Controller
                 '=',
                 'itens.id'
             )
-            ->select('itens.*', 'estoque.qtde as estoque')->get();
+            ->select('itens.*', 'estoque.qtde as estoque')->orderBy('valor', 'ASC')->get();
 
         $permitido = $this->permissao(Auth::user()->id ?? false);
         return view('welcome', compact('permitido', 'alcoolicas', 'porcoes', 'bebidas', 'doces', 'meia'));
