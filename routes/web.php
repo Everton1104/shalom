@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,3 +56,12 @@ Route::resource('sistema', 'App\Http\Controllers\SistemaController')->middleware
 
 Route::any('searchItem', 'App\Http\Controllers\SistemaController@searchItem')->middleware('auth')->name('searchItem');
 Route::any('searchComanda', 'App\Http\Controllers\SistemaController@searchComanda')->middleware('auth')->name('searchComanda');
+
+// LIMPAR LARAVEL
+Route::get('limpar', function () {
+    Artisan::call('view:clear');
+    Artisan::call('cache:clear');
+    // Artisan::call('config:cache');
+    // Artisan::call('route:cache');
+    return redirect('/');
+});

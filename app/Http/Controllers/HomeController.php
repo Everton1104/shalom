@@ -66,7 +66,16 @@ class HomeController extends Controller
             )
             ->select('itens.*', 'estoque.qtde as estoque')->orderBy('valor', 'ASC')->get();
 
+        $salgados = ItemModel::where('categoria', 6)
+            ->leftJoin(
+                'estoque',
+                'estoque.item_id',
+                '=',
+                'itens.id'
+            )
+            ->select('itens.*', 'estoque.qtde as estoque')->orderBy('valor', 'ASC')->get();
+
         $permitido = $this->permissao(Auth::user()->id ?? false);
-        return view('welcome', compact('permitido', 'alcoolicas', 'porcoes', 'bebidas', 'doces', 'meia'));
+        return view('welcome', compact('permitido', 'alcoolicas', 'porcoes', 'bebidas', 'doces', 'meia', 'salgados'));
     }
 }

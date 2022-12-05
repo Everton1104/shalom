@@ -46,6 +46,34 @@
                     </table>
                 </div>
             @endif
+            @if (!empty($salgados[0]->nome))
+                <h1 class="text-center my-5" style="font-family:menu_itens">Salgados</h1>
+                <div class="table-responsive">
+                    <table class="table" style="color:white">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">VALOR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($salgados as $item)
+                                <tr>
+                                    <td>
+                                        {{ mb_strtoupper($item->nome) }}
+                                        @if ($item->estoque <= 0)
+                                            - <span class="border rounded p-1">ESGOTADO</span>
+                                        @endif
+                                    </td>
+                                    <td class="nowrap">
+                                        R$ {{ number_format($item->valor, 2, ',', '.') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
             @if (!empty($alcoolicas[0]->nome))
                 <h1 class="text-center my-5" style="font-family:menu_itens">BABIDAS ALCOÓLICAS</h1>
                 <div class="table-responsive">

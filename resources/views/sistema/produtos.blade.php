@@ -67,6 +67,9 @@
                                             case '5':
                                                 echo 'Porções';
                                                 break;
+                                            case '6':
+                                                echo 'Salgados';
+                                                break;
                                         }
                                     @endphp
                                 </td>
@@ -111,6 +114,7 @@
                             <option value="2">Porções</option>
                             <option value="3">Bebidas</option>
                             <option value="4">Doces e Sobremesas</option>
+                            <option value="6">Salgados</option>
                         </select>
                         <label id="labelValorAdd" for="valorAdd">Valor de Venda</label>
                         <input class="form-control" id="valorAdd" name="valor" type="number" />
@@ -159,6 +163,7 @@
                             <option value="3">Bebidas</option>
                             <option value="4">Doces e Sobremesas</option>
                             <option value="5" hidden>meia</option>
+                            <option value="6">Salgados</option>
                         </select>
 
                         <div id="intEdt" class="d-none">

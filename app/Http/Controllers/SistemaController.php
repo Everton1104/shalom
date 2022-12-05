@@ -151,7 +151,7 @@ class SistemaController extends Controller
                 '=',
                 'itens.id'
             )
-                ->select('comanda.*', 'itens.nome', 'itens.valor', 'itens.id as itemId', 'categoria')
+                ->select('comanda.*', 'itens.nome', 'itens.valor', 'itens.id as itemId', 'itens.categoria')
                 ->get();
             $cartao = CartaoModel::where('id', '=', $card_id)->first();
             $permitido = $this->permissao(Auth::user()->id);

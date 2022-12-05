@@ -39,6 +39,7 @@
                                 <tr>
                                     <td>{{ $item->obs }}</td>
                                     <td></td>
+                                    <td></td>
                                     <td>{{ $item->qtde }}</td>
                                     <td></td>
                                 </tr>
@@ -65,6 +66,12 @@
                                                     break;
                                                 case '4':
                                                     echo 'Doces e Sobremesas';
+                                                    break;
+                                                case '5':
+                                                    echo 'Porções';
+                                                    break;
+                                                case '6':
+                                                    echo 'Salgados';
                                                     break;
                                             }
                                         @endphp
