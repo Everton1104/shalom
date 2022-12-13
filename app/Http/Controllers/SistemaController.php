@@ -9,6 +9,7 @@ use App\Models\ItemModel;
 use App\Models\CartaoModel;
 use App\Models\EstoqueModel;
 use App\Models\HistoricoModel;
+use App\Models\User;
 
 class SistemaController extends Controller
 {
@@ -558,7 +559,7 @@ class SistemaController extends Controller
             ]);
             HistoricoModel::create([
                 'user_id' => Auth::user()->id,
-                'operacao' => 11,
+                'operacao' => 12,
                 'obs' => Auth::user()->name . ' registrou a bonificação de ' . $request->qtde . ' unidades de ' . $item->nome . ' para ' . $card->nome
             ]);
             return redirect()->to('searchComanda?code=' . $request->code)->with('msg', 'Produto(os) bonificado(os).');
@@ -648,9 +649,25 @@ class SistemaController extends Controller
 
     public function indexHistorico(Request $request)
     {
-        // if (Auth::user()->id == 1 || Auth::user()->id == 2) {
         $permitido = $this->permissao(Auth::user()->id);
-        return view('sistema.historico', compact('permitido'));
-        // }
+        if (Auth::user()->id == 1 || Auth::user()->id == 2) {
+            $users = User::get();
+            $user = null;
+            $historico = null;
+            if (isset($request->userId)) {
+                $user = User::where('id', $request->userId)->first();
+                if ($request->operacao > 0) {
+                    $historico = HistoricoModel::where([
+                        ['user_id', $request->userId],
+                        ['operacao', $request->operacao],
+                    ])->get();
+                } else {
+                    $historico = HistoricoModel::where('user_id', $request->userId)->get();
+                }
+            }
+            return view('sistema.historico', compact('permitido', 'users', 'user', 'historico'));
+        } else {
+            return redirect()->back();
+        }
     }
 }
