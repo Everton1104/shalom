@@ -70,3 +70,16 @@ Route::get('limpar', function () {
     // Artisan::call('route:cache');
     return redirect('/');
 });
+
+// RODAR MIGRATIONS
+Route::get('migrate', function () {
+    if (Auth::user()->id == 1) {
+        try {
+            Artisan::call('migrate');
+            return redirect()->back()->with('msg', 'migration concluida');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('erroMsg', 'Erro Migration');
+        }
+    }
+    return redirect()->back();
+});
