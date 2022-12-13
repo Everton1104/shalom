@@ -670,4 +670,34 @@ class SistemaController extends Controller
             return redirect()->back();
         }
     }
+
+    public function indexProdutosUso(Request $request)
+    {
+        // TESTE (criar tabela produtos uso)
+        $itens = ItemModel::leftJoin(
+            'estoque',
+            'estoque.item_id',
+            '=',
+            'itens.id'
+        )
+            ->select('itens.*', 'estoque.valor as valorCompra', 'estoque.qtde as qtdeEstoque')->orderBy('id')->get();
+        // TESTE
+        $permitido = $this->permissao(Auth::user()->id);
+        return view('sistema.produtosUso', compact('permitido', 'itens'));
+    }
+
+    public function EditarProdutoUso(Request $request)
+    {
+        return 'edt';
+    }
+
+    public function NovoProdutoUso(Request $request)
+    {
+        return 'novo';
+    }
+
+    public function DeleteProdutoUso(Request $request)
+    {
+        return 'del';
+    }
 }

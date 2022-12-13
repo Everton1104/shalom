@@ -83,6 +83,9 @@
                                         <a class="dropdown-item" href="{{ route('sistema.relatorio') }}">
                                             {{ __('Relatórios') }}
                                         </a>
+                                        <a class="dropdown-item" href="{{ route('sistema.produtosUso') }}">
+                                            {{ __('Cadastro de produtos de Uso') }}
+                                        </a>
                                         @if (Auth::user()->id == 1 || Auth::user()->id == 2)
                                             <a class="dropdown-item" href="{{ route('sistema.historico') }}">
                                                 {{ __('Histórico') }}
