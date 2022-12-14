@@ -657,10 +657,29 @@ class SistemaController extends Controller
             if (isset($request->userId)) {
                 $user = User::where('id', $request->userId)->first();
                 if ($request->operacao > 0) {
-                    $historico = HistoricoModel::where([
-                        ['user_id', $request->userId],
-                        ['operacao', $request->operacao],
-                    ])->get();
+                    if (isset($request->dataInit) && isset($request->dataFim)) {
+                        if (strtotime($request->dataInit) <= strtotime($request->dataFim)) {
+                            $historico = HistoricoModel::whereBetween(
+                                'updated_at',
+                                [date('Y-m-d', strtotime($request->dataInit)), date('Y-m-d', strtotime('+1 days', strtotime($request->dataFim)))]
+                            )->where([
+                                ['user_id', $request->userId],
+                                ['operacao', $request->operacao],
+                            ])->get();
+                        }
+                    } else {
+                        $historico = HistoricoModel::where([
+                            ['user_id', $request->userId],
+                            ['operacao', $request->operacao],
+                        ])->get();
+                    }
+                } elseif (isset($request->dataInit) && isset($request->dataFim)) {
+                    if (strtotime($request->dataInit) <= strtotime($request->dataFim)) {
+                        $historico = HistoricoModel::whereBetween(
+                            'updated_at',
+                            [date('Y-m-d', strtotime($request->dataInit)), date('Y-m-d', strtotime('+1 days', strtotime($request->dataFim)))]
+                        )->get();
+                    }
                 } else {
                     $historico = HistoricoModel::where('user_id', $request->userId)->get();
                 }
